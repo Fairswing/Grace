@@ -6,7 +6,7 @@ public class neuron {
 	
 	public neuron() {
 		weight = 1;
-		learning_rate = 0.001f;
+		learning_rate = 0.0001f;
 	};
 	
 	public void changeWeight(float error, float output) {
