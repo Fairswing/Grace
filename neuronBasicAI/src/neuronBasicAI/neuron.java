@@ -3,9 +3,9 @@ package neuronBasicAI;
 import java.util.Random;
 
 public class neuron {
-	Random random;
-	float eps;
-	float weight;
+	private Random random;
+	private float eps;
+	private float weight;
 	
 	public neuron() {
 		random = new Random();
@@ -19,6 +19,8 @@ public class neuron {
 		
 		//calcolo il mio nuovo peso in base alla derivata e al mio learning rate
 		weight = (weight-eps) * derivative;
+		
+		System.out.println("new weight: " + weight);
 	}
 	
 	public float calculate(float input) {
