@@ -1,30 +1,25 @@
 package neuronBasicAI;
 
-import java.util.Random;
-
 public class neuron {
-	private Random random;
-	private float eps;
 	private float weight;
+	private float learning_rate;
 	
 	public neuron() {
-		random = new Random();
-		eps = (float) 1e-3;
-		weight = (float) random.nextGaussian();
+		weight = 1;
+		learning_rate = 0.001f;
 	};
 	
-	public void changeWeight(float error_prime, float output) {
-		//calcolo la derivata dell'errore finale in base al mio peso
-		float derivative = (float) (error_prime * output * (1.0 - output) * weight);
-		
-		//calcolo il mio nuovo peso in base alla derivata e al mio learning rate
-		weight = (weight-eps) * derivative;
-		
-		System.out.println("new weight: " + weight);
+	public void changeWeight(float error, float output) {
+		// Calculate the derivative of the error with respect to the weight
+        float derivative = error * output * (1.0f - output) * weight;
+
+        // Update the weight using the derivative
+        weight = weight - learning_rate * derivative;
+
+        System.out.println("New weight: " + weight);
 	}
 	
 	public float calculate(float input) {
-		return input * weight;
+		return Math.max(0, input * weight);
 	}
-	
 }
