@@ -17,4 +17,8 @@ public class neuron {
 		//weight = 
 	}
 	
+	public float calculate(float input) {
+		return input * weight;
+	}
+	
 }
