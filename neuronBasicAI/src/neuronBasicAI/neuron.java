@@ -16,6 +16,7 @@ public class neuron {
 		this.bias=0f; // should be randomly initialized like weights
 		this.learning_rate = learning_rate;
 	};
+	
 	public neuron(int nWeights) {
 		super();
 		this.weights = new ArrayList<Float>();
@@ -40,7 +41,6 @@ public class neuron {
 	public float getLearning_rate() {
 		return learning_rate;
 	}
-
 	public void setLearning_rate(float learning_rate) {
 		this.learning_rate = learning_rate;
 	}
