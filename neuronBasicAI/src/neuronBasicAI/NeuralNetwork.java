@@ -40,7 +40,10 @@ public class NeuralNetwork {
 		this.layers.add(new ArrayList<neuron>());
 	}
 	public void addNeuronToLayer(int layerIndex) {
-		this.layers.get(layerIndex).add(new neuron(this.nWeightsXNeuron,this.learning_rate));
+		if(layerIndex == 0)
+			this.layers.get(layerIndex).add(new neuron(this.nWeightsXNeuron,this.learning_rate));
+		else
+			this.layers.get(layerIndex).add(new neuron(this.layers.get(layerIndex - 1).size(),this.learning_rate));
 	}
 	
 	public float getLearning_rate() {
@@ -55,18 +58,24 @@ public class NeuralNetwork {
 	// Assuming every neuron of a layer is connected with every neuron of the next layer
 	public List<Float> forward(List<Float >inputs) {
 	    List<Float> currentInputs = List.copyOf(inputs);  // Copy the initial inputs
+	    //System.out.println("inputs: " + currentInputs.toString());
+	    //System.out.println("CurrentInputs.size(): " + currentInputs.size());
 	  
 	    for (List<neuron> layer : layers) {
 	        List<Float> layerOutputs = new ArrayList<>();
 
 	        for (neuron neuron : layer) {
+	        	//System.out.println("CurrentInputs.size(): " + currentInputs.size());
 	            float neuronOutput = neuron.calculate(currentInputs);
 	            layerOutputs.add(neuronOutput);
 	        }
+            //System.out.println("output: " + layerOutputs.toString());
+
 
 	        // Update inputs for the next layer
 	        currentInputs = List.copyOf(layerOutputs);
 	    }
+        System.out.println("inputs: " + currentInputs.toString());
 	    return currentInputs;// Return the output of the first (and only) neuron
 	}
 	
@@ -92,30 +101,38 @@ public class NeuralNetwork {
 	}
 
 	
-	public void train(List<List<Float>> trainingData, int iterations) {
+	public void train(List<List<Float>> InTrainingData, List<List<Float>> OutTrainingData, int iterations) {
 	    for (int iteration = 0; iteration < iterations; ++iteration) {
 	        float totalCost = 0.0f;
 	        
 	        
-	        for (List<Float> train : trainingData) {
+	        for (int f = 0; f < InTrainingData.size(); f++) {
 	        	float instanceCost = 0.0f;
-	            List<Float> inputs = new ArrayList<>(train.subList(0, train.size() - 1));
-	            List<Float> expectedOutputs = new ArrayList<>(train.subList(train.size() - 1, train.size()));
+	            List<Float> inputs = new ArrayList<>(InTrainingData.get(f));
+	            List<Float> expectedOutputs = new ArrayList<>(OutTrainingData.get(f));
 
+	            //System.out.println("InTrainingData.size(): " + inputs.size());
 	            // Forward pass to get the network output
 	            List<Float> output = forward(inputs);
-
+	            
 	            // Backpropagation
+	            float errorSum = 0f;
+	            float totalError = 0f;
+	            
 	            for (int i = 0; i < this.layers.size(); ++i) {
 	                List<neuron> layer = this.layers.get(i);
 
 	                for (int j = 0; j < layer.size(); ++j) {
+	                	neuron currentNeuron = layer.get(j);
 	                	for(int k=0;k<expectedOutputs.size();++k) {
-	                		neuron currentNeuron = layer.get(j);
-		                    float error = output.get(k) - expectedOutputs.get(k);
-		                    System.out.println("error:"+error);
-		                    // Calculate and update weights
-		                    currentNeuron.changeWeight(error, output.get(k));
+		                    errorSum =+ expectedOutputs.get(k) - output.get(k);
+		                    totalError = errorSum / expectedOutputs.size();
+		                    System.out.println("error:" + totalError);
+	                	}
+	                	
+	                	for(int k = 0; k<expectedOutputs.size(); k++) {
+	                		// Calculate and update weights
+		                	currentNeuron.changeWeight(totalError, output.get(k));
 	                	}
 	                    
 	                }
@@ -131,7 +148,7 @@ public class NeuralNetwork {
 	        }
 
 	        // Calculate average cost for the epoch
-	        float averageCost = totalCost / trainingData.size();
+	        float averageCost = totalCost / InTrainingData.size();
 
 	        // Optionally print or log the cost for each iteration
 	        System.out.println("Iteration " + iteration + ", Cost: " + averageCost);

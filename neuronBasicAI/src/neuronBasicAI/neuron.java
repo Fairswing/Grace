@@ -52,9 +52,10 @@ public class neuron {
 
 	        // Update the weight using the derivative
 	        this.weights.set(i, this.weights.get(i) - this.learning_rate * derivative);
+	        
+	        //System.out.println("New weight: " + this.weights.get(i));
 	    }
         
-        //System.out.println("New weight: " + weight);
 	}
 	
 	
@@ -66,8 +67,9 @@ public class neuron {
 	
 	//generalized version of the calculate function
 	public float calculate(List<Float> inputs) {
+		//System.out.println("Input.size(): " + inputs.size());
 		if(inputs.size()!=this.weights.size()) {
-			System.out.println("calculate: inputs and weights sizes don't match");
+			System.out.println("calculate: inputs [ " + inputs.size() + " ] and weights[ " + this.weights.size() + " ] sizes don't match");
 			return 0f; //error 
 		}
 		float result =0f;
@@ -82,6 +84,11 @@ public class neuron {
 	// activation function:  adds bends and curvature to an otherwise linear output allowing it to capture and rapresent more complex patterns in the data.
 	public float activationFunction(float x) {
 		return Math.max(0, x);
+		//return x;
+	}
+	
+	public float sigmoid(float x) {
+	    return (float) (1.0f / (1.0f + Math.exp(-x)));
 	}
 	
 	
