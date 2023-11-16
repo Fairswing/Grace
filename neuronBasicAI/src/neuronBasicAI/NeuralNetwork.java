@@ -26,7 +26,7 @@ public class NeuralNetwork {
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<neuron>>();
-		this.learning_rate=1e-1f;
+		this.learning_rate=1.5e-4f;
 		this.eps=1e-3f;
 	}
 	
@@ -128,9 +128,9 @@ public class NeuralNetwork {
 		    for (List<neuron> layer : this.layers) {
 		        for (neuron currentNeuron : layer) {
 		        	// Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
-		            List<Float> curWeights=currentNeuron.getWeights();
+		            List<Float> curWeights = currentNeuron.getWeights();
 		            for(int i=0;i<curWeights.size(); ++i) {
-		            	float savedWeight=curWeights.get(i);// Adding and then subtracting eps would cause inconsistencies in the floats.
+		            	float savedWeight = curWeights.get(i);// Adding and then subtracting eps would cause inconsistencies in the floats.
 		            	curWeights.set(i, savedWeight+eps);
 		            	float finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps); // FiniteDifference (approximation of the derivative of the cost function)
 		            	curWeights.set(i, savedWeight-(this.learning_rate*finiteDiff));

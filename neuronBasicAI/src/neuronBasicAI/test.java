@@ -7,29 +7,27 @@ public class test {
 	public static void main(String[] args) {
 
 		NeuralNetwork scervelo = new NeuralNetwork();
-		scervelo.setnWeightsXNeuron(2);
+		scervelo.setnWeightsXNeuron(1);
 		scervelo.addLayer();
 		scervelo.addNeuronToLayer(0);
-		scervelo.addNeuronToLayer(0);
+		/*scervelo.addNeuronToLayer(0);
 		scervelo.addLayer();
-		scervelo.addNeuronToLayer(1);
+		scervelo.addNeuronToLayer(1);*/
 		
 		List<List<Float>> TrainIn = new ArrayList<>();
 		List<List<Float>> TrainOut = new ArrayList<>();
 
-		// XOR truth table
-        TrainIn.add(List.of(0f,0f));
-        TrainIn.add(List.of(0f,1f));
-        TrainIn.add(List.of(1f,0f));
-        TrainIn.add(List.of(1f,1f));
+		// Training dataset
+        TrainIn.add(List.of(1f));
+        TrainIn.add(List.of(2f));
+        TrainIn.add(List.of(3f));
         
-        TrainOut.add(List.of(0f));
-        TrainOut.add(List.of(1f));
-        TrainOut.add(List.of(1f));
-        TrainOut.add(List.of(0f));
+        TrainOut.add(List.of(1000f));
+        TrainOut.add(List.of(2000f));
+        TrainOut.add(List.of(3000f));
 		
 		
-		scervelo.train(TrainIn, TrainOut, 100*1000);
+		scervelo.train(TrainIn, TrainOut, 1000000);
 		
 		
 		// Get the neuraln network's outputs.
@@ -43,7 +41,8 @@ public class test {
 		for (int i = 0; i < TrainIn.size(); ++i) {
 			System.out.print("input: "+TrainIn.get(i).toString());
 	        System.out.print(" Expected output: "+TrainOut.get(i).toString());
-	        System.out.println(" | Actual output: "+outputs.get(i).toString());
+	        System.out.print(" | Actual output: "+ outputs.get(i).toString());
+	        System.out.println(" Error: [ "+ (TrainOut.get(i).get(0) - outputs.get(i).get(0)) + " ]");
         }
 	}
 }
