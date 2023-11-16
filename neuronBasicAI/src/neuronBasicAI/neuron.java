@@ -11,7 +11,8 @@ public class neuron {
 		super();
 		this.weights = new ArrayList<Float>();
 		for(int i=0;i<nWeights; ++i) {
-			this.weights.add((float)Math.random()*10);// randomize the initial value of the weight
+			//this.weights.add((float)Math.random()*10);// randomize the initial value of the weight
+			this.weights.add(1f);
 		}
 		this.bias=0f; // should be randomly initialized like weights
 		this.learning_rate = learning_rate;
@@ -21,10 +22,11 @@ public class neuron {
 		super();
 		this.weights = new ArrayList<Float>();
 		for(int i=0;i<nWeights; ++i) {
-			this.weights.add((float)Math.random()*10);// randomize the initial value of the weight
+			//this.weights.add((float)Math.random()*10); // randomize the initial value of the weight
+			this.weights.add(1f);
 		}
 		this.bias=0f;// should be randomly initialized like weights
-		this.learning_rate = 1e-4f;
+		this.learning_rate = 1e-8f;
 	};
 	
 	
@@ -46,16 +48,19 @@ public class neuron {
 	}
 
 	public void changeWeight(float error, float output) {
-		for (int i = 0; i < this.weights.size(); i++) {
+		
+	    float clippedError = Math.max(0f, Math.min(1.0f, error)); // Clip error between -1 and 1
+	    
+	    for (int i = 0; i < this.weights.size(); i++) {
 	        // Calculate the derivative of the error with respect to the weight
-	        float derivative = error * output * (1.0f - output) * weights.get(i);
+	        float derivative = clippedError * sigmoid(output) * (1.0f - output) * sigmoid(this.weights.get(i));
 
-	        // Update the weight using the derivative
-	        this.weights.set(i, this.weights.get(i) - this.learning_rate * derivative);
-	        
-	        //System.out.println("New weight: " + this.weights.get(i));
+	        // Update the weight using the derivative and learning rate
+	        float newWeight = this.weights.get(i) - this.learning_rate * derivative;
+
+	        // Update the weight with the clipped value
+	        this.weights.set(i, newWeight);
 	    }
-        
 	}
 	
 	
