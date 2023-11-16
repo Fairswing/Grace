@@ -26,7 +26,7 @@ public class neuron {
 			this.weights.add(1f);
 		}
 		this.bias=0f;// should be randomly initialized like weights
-		this.learning_rate = 1e-8f;
+		this.learning_rate = 1e-6f;
 	};
 	
 	
@@ -53,7 +53,7 @@ public class neuron {
 	    
 	    for (int i = 0; i < this.weights.size(); i++) {
 	        // Calculate the derivative of the error with respect to the weight
-	        float derivative = clippedError * sigmoid(output) * (1.0f - output) * sigmoid(this.weights.get(i));
+	        float derivative = clippedError * sigmoid(output) * (1.0f - output) * this.weights.get(i);
 
 	        // Update the weight using the derivative and learning rate
 	        float newWeight = this.weights.get(i) - this.learning_rate * derivative;
