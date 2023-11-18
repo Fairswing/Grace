@@ -26,7 +26,7 @@ public class NeuralNetwork {
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<neuron>>();
-		this.learning_rate=1.5e-4f;
+		this.learning_rate=1e-3f;
 		this.eps=1e-3f;
 	}
 	
@@ -95,12 +95,15 @@ public class NeuralNetwork {
 	// Calculate the average of the differences between the expected outputs and the actual output.
 	public float cost(List<List<Float>> trainingData, List<List<Float>> outTrainingData) {
 	    float result = 0.0f;
+	    float errorPow = 0.0f;
 	    int trainCount = trainingData.size();
 	    for (int i = 0; i < trainingData.size(); ++i) {
 	    	List<Float> output = forward(trainingData.get(i));
 	        for (int j = 0; j < output.size(); ++j) {
 	            float error = output.get(j) - outTrainingData.get(i).get(j);
-	            result += error * error;// Used to emphasize errors, allowing the neural network to perceive them more easily.
+	            errorPow = error * error;// Used to emphasize errors, allowing the neural network to perceive them more easily.
+	            result += errorPow * ( activationFunction(output.get(j)+eps)- activationFunction(output.get(j)) )/eps;
+
 	        }
         }
 	    result /= trainCount;
@@ -146,4 +149,10 @@ public class NeuralNetwork {
 	        System.out.println("Iteration " + iteration + ", Cost: " + c);
 		}
 	}
+	
+	// activation function:  adds bends and curvature to an otherwise linear output allowing it to capture and rapresent more complex patterns in the data.
+		public float activationFunction(float x) {
+			//return sigmoid(x);
+			return x;
+		}
 }

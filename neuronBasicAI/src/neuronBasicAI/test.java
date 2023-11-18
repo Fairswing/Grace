@@ -10,9 +10,9 @@ public class test {
 		scervelo.setnWeightsXNeuron(1);
 		scervelo.addLayer();
 		scervelo.addNeuronToLayer(0);
-		/*scervelo.addNeuronToLayer(0);
+		//scervelo.addNeuronToLayer(0);
 		scervelo.addLayer();
-		scervelo.addNeuronToLayer(1);*/
+		scervelo.addNeuronToLayer(1);
 		
 		List<List<Float>> TrainIn = new ArrayList<>();
 		List<List<Float>> TrainOut = new ArrayList<>();
@@ -22,9 +22,9 @@ public class test {
         TrainIn.add(List.of(2f));
         TrainIn.add(List.of(3f));
         
-        TrainOut.add(List.of(1000f));
-        TrainOut.add(List.of(2000f));
-        TrainOut.add(List.of(3000f));
+        TrainOut.add(List.of(10f));
+        TrainOut.add(List.of(20f));
+        TrainOut.add(List.of(30f));
 		
 		
 		scervelo.train(TrainIn, TrainOut, 1000000);
