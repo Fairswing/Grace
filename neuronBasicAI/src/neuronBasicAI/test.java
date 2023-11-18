@@ -9,8 +9,8 @@ public class test {
 		NeuralNetwork scervelo = new NeuralNetwork();
 		scervelo.setnWeightsXNeuron(1);
 		scervelo.addLayer();
-		scervelo.addNeuronToLayer(0);
 		//scervelo.addNeuronToLayer(0);
+		scervelo.addNeuronToLayer(0);
 		scervelo.addLayer();
 		scervelo.addNeuronToLayer(1);
 		
@@ -18,6 +18,7 @@ public class test {
 		List<List<Float>> TrainOut = new ArrayList<>();
 
 		// Training dataset
+		
         TrainIn.add(List.of(1f));
         TrainIn.add(List.of(2f));
         TrainIn.add(List.of(3f));
@@ -26,8 +27,19 @@ public class test {
         TrainOut.add(List.of(20f));
         TrainOut.add(List.of(30f));
 		
+		/*
+		TrainIn.add(List.of(0f,0f));
+        TrainIn.add(List.of(0f,1f));
+        TrainIn.add(List.of(1f,0f));
+        TrainIn.add(List.of(1f,1f));
+        
+		TrainOut.add(List.of(0f));
+        TrainOut.add(List.of(1f));
+        TrainOut.add(List.of(1f));
+        TrainOut.add(List.of(0f));
+		*/
 		
-		scervelo.train(TrainIn, TrainOut, 1000000);
+		scervelo.train(TrainIn, TrainOut, 1000*1000);
 		
 		
 		// Get the neuraln network's outputs.
