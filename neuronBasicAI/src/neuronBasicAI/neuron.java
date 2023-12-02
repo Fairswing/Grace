@@ -55,13 +55,13 @@ public class neuron {
 	
 	// activation function:  adds bends and curvature to an otherwise linear output allowing it to capture and rapresent more complex patterns in the data.
 	public static float activationFunction(float x) {
-		//return sigmoid(x);
+		return sigmoid(x);
 		//return Math.max(0, x);
-		return x;
+		//return x;
 	}
 	
 	
-	public float sigmoid(float x) {
+	public static float sigmoid(float x) {
 	    return (float) (1.f / (1.f + (float)Math.exp(-x)));
 	}
 	
