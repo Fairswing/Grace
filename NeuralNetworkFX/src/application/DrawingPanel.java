@@ -26,7 +26,7 @@ public class DrawingPanel extends StackPane{
 		g2d = canvas.getGraphicsContext2D();
 		
 		pixel=20;
-		imgDim=7;
+		imgDim=4;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
 		
@@ -39,8 +39,8 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 
 	        		scervelo.addLayer(2);
-	        		scervelo.addLayer(imgDim);
-	        		scervelo.addLayer(imgDim);
+	        		scervelo.addLayer(4);
+	        		scervelo.addLayer(4);
 	        		scervelo.addLayer(1);
 	        		
 	        		
@@ -56,9 +56,9 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		// Generating sphere
 	        		// Center coordinates of the sphere
-	                double centerX = imgDim / 2.0f;
-	                double centerY = imgDim / 2.0f;
-	                double radius = imgDim / 4.0f;
+	                double centerX = imgDim / 2.0d;
+	                double centerY = imgDim / 2.0d;
+	                double radius = imgDim / 4.0d;
 
 	                for (int row = 0; row < imgDim; ++row) {
 	                    for (int col = 0; col < imgDim; ++col) {
@@ -68,7 +68,7 @@ public class DrawingPanel extends StackPane{
 	                        // Check if the pixel is within the sphere
 	                        if (distance <= radius) {
 	                            // Use shading based on the distance from the center
-	                            double intensity = 1.0f - (distance / radius); // Linear shading
+	                            double intensity = 1.0d - (distance / radius); // Linear shading
 	                            TrainOut.add(intensity);
 	                        } else {
 	                            TrainOut.add(0.0d);
@@ -80,11 +80,13 @@ public class DrawingPanel extends StackPane{
 	                drawBackground();
 	        		drawImage(TrainOut,imgX,imgY,pixel,imgDim);
 	        		
+	        		
 	        		// Training neural network
 	        		for(int i=0; i<100*1000; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			if(i%1000==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
+	        				drawNN(scervelo);
 	        			}
 	        			
 	        			List<Double> img = new ArrayList<>();
@@ -93,8 +95,8 @@ public class DrawingPanel extends StackPane{
 	        		    	img.add(output.get(0));
 	        	        }
         				drawImage(img,imgX,imgY*2+imgDim*pixel,pixel,imgDim);
-	        			
-		        		
+        				
+        				
 	        		}
 	        		
 	        		
@@ -126,7 +128,7 @@ public class DrawingPanel extends StackPane{
 	        		// Print images 
 	        		System.out.println("given image:");
 	        		for (int i = 0; i < TrainOut.size(); ++i) {
-        				if(TrainOut.get(i)>=0.5f) {
+        				if(TrainOut.get(i)>=0.5d) {
         					System.out.print("■");
         				}else {
         					System.out.print("□");
@@ -140,7 +142,7 @@ public class DrawingPanel extends StackPane{
 	        		System.out.println("NN image:");
 	        		for (int i = 0; i < img.size(); ++i) {
 
-        				if(img.get(i)>=0.5f) {
+        				if(img.get(i)>=0.5d) {
         					System.out.print("■");
         				}else {
         					System.out.print("□");
@@ -158,6 +160,23 @@ public class DrawingPanel extends StackPane{
 	public void start() {
 		thread1.start();
 	}
+	
+	public void drawNN(NeuralNetwork scervelo) {
+		Platform.runLater(() -> {
+			int k=0;
+			for (List<Neuron> layer : scervelo.getLayers()) {
+				int y=0;
+		        for (Neuron currentNeuron : layer) {
+		        	int curLayer=scervelo.getLayers().indexOf(layer);
+		        	//g2d.setFill(Color.rgb(Math.abs((int)currentNeuron.getWeight(curLayer)%255), (int)255, (int)255));
+					g2d.fillOval(k*(pixel*2)+10, y*(pixel*2)+10, pixel, pixel);
+					y++;
+		        }
+		        k++;
+			}
+		});
+	}
+	
 	public static void drawBackground() {
 		g2d.setFill(Color.rgb(100, 100, 100));
 		g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

@@ -18,7 +18,7 @@ import java.util.List;
 
 
 public class NeuralNetwork {
-	private List<List<neuron>> layers;
+	private List<List<Neuron>> layers;
 	private double learning_rate;
 	private double eps;
 	private int nWeightsXNeuron;
@@ -26,10 +26,10 @@ public class NeuralNetwork {
 
 	public NeuralNetwork() {
 		super();
-		this.layers = new ArrayList<List<neuron>>();
-		this.learning_rate=1f;
-		this.eps=1e-1f;
-		this.momentumFactor=0.6f;
+		this.layers = new ArrayList<List<Neuron>>();
+		this.learning_rate=1d;
+		this.eps=1e-1d;
+		this.momentumFactor=0.6d;
 	}
 	
 	public int getnWeightsXNeuron() {
@@ -55,71 +55,65 @@ public class NeuralNetwork {
 		this.eps = eps;
 	}
 	
-	public List<List<neuron>> getLayers() {
+	public List<List<Neuron>> getLayers() {
 		return layers;
 	}
 
-	public void setLayers(List<List<neuron>> layers) {
+	public void setLayers(List<List<Neuron>> layers) {
 		this.layers = layers;
 	}
 
 	
 	
 	public void addLayer() {
-		this.layers.add(new ArrayList<neuron>());
+		this.layers.add(new ArrayList<Neuron>());
 	}
+	
 	public void addLayer(int nNeurons) {
-		this.layers.add(new ArrayList<neuron>());
+		this.layers.add(new ArrayList<Neuron>());
 		for(int i=0;i<nNeurons;i++) {
 			this.addNeuronToLayer(layers.size()-1);
 		}
 	}
+	
 	public void addNeuronToLayer(int layerIndex) {
 		if(layerIndex == 0)
-			this.layers.get(layerIndex).add(new neuron(this.nWeightsXNeuron));
+			this.layers.get(layerIndex).add(new InputNeuron(1));
 		else
-			this.layers.get(layerIndex).add(new neuron(this.layers.get(layerIndex - 1).size()));
+			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size()));
 	}
 
 	public List<Double> forward(List<Double> inputs) {
 	    List<Double> currentInputs = List.copyOf(inputs);
-	    
 	    double neuronOutput;
 	    List<Double> neuronInputs;
-	    
-	    for (List<neuron> layer : this.layers) {
+	    for (List<Neuron> layer : this.layers) {
 	        List<Double> layerOutputs = new ArrayList<>();
 	        int neuronIndex = 0;
-	        for (neuron neuron : layer) {
-	        	if(layers.indexOf(layer)==0) {
-	        		// Extract the inputs for the current neuron
-		            neuronInputs = currentInputs.subList(neuronIndex, neuronIndex + neuron.getWeights().size());
-
-		            layerOutputs.addAll(neuronInputs);
-	        	}else {
-	        		// Calculate the output of the neuron
-		            neuronOutput = neuron.calculate(currentInputs);
-		            layerOutputs.add(neuronOutput);
-	        	}
-	        }
-
+	        for (Neuron neuron : layer) {
+        		// Extract the inputs for the current neuron
+	            neuronInputs = currentInputs.subList(neuronIndex, neuronIndex + neuron.getWeights().size());
+	            neuronOutput = neuron.calculate(neuronInputs);
+	            layerOutputs.add(neuronOutput);
+	            neuronIndex=neuronIndex+neuron.getWeights().size()%currentInputs.size();
+	        }	        
 	        // Update inputs for the next layer
 	        currentInputs = List.copyOf(layerOutputs);
 	    }
 	    return currentInputs; // Return the output of the last layer
 	}
-		
+	
 	// Calculate the average of the differences between the expected outputs and the actual output.
 	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {
-	    double result = 0.0f;
-	    double errorPow = 0.0f;
+	    double result = 0.0d;
+	    double errorPow = 0.0d;
 	    int trainCount = trainingData.size();
 	    for (int i = 0; i < trainCount; ++i) {
 	    	List<Double> output = forward(trainingData.get(i));
 	        for (int j = 0; j < output.size(); ++j) {
 	            double error = output.get(j) - outTrainingData.get(i);
 	            errorPow = error * error;// Used to emphasize errors, allowing the neural network to perceive them more easily.
-	            //result += errorPow * ( neuron.activationFunction(output.get(j)+eps)- neuron.activationFunction(output.get(j)) )/eps; //da rivedere
+	            //result += errorPow * ( neuron.activate(output.get(j)+eps)- neuron.activationFunction(output.get(j)) )/eps; //da rivedere
 	            result += errorPow;
 	        }
         }
@@ -140,17 +134,17 @@ public class NeuralNetwork {
 	 * due to the limitations of doubles.
 	 * 
 	 */
-	private double prevVt=0;
-	private double vt = 0;
+	private double prevVt=0d;
+	private double vt = 0d;
 	private double savedWeight;
 	private double finiteDiff;
 	private double savedBias;
 	public void train(List<List<Double>> trainingData, List<Double> outTrainingData) {
 	    // Backpropagation
 	    double c = cost(trainingData,outTrainingData);// Save the cost funcion's result before changing the weights by eps.
-	    for (List<neuron> layer : this.layers) {
+	    for (List<Neuron> layer : this.layers) {
 	    	if(layers.get(0)!=layer) {
-		        for (neuron currentNeuron : layer) {
+		        for (Neuron currentNeuron : layer) {
 		        	// Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
 		            List<Double> curWeights = currentNeuron.getWeights();
 		            for(int i=0;i<curWeights.size(); ++i) {

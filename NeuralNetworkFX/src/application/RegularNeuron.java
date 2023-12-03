@@ -2,11 +2,11 @@ package application;
 import java.util.List;
 import java.util.ArrayList;
 
-public class neuron {
+public class RegularNeuron implements Neuron{
 	private List<Double> weights;
 	private double bias;
 	
-	public neuron(int nWeights) {
+	public RegularNeuron(int nWeights) {
 		super();
 		this.weights = new ArrayList<Double>();
 		for(int i=0;i<nWeights; ++i) {
@@ -49,12 +49,11 @@ public class neuron {
 			 result+= inputs.get(i) * this.weights.get(i);
 		}
 		result += this.bias;
-		return activationFunction(result);
+		return activate(result);
 	}
 	
-	
-	// activation function:  adds bends and curvature to an otherwise linear output allowing it to capture and rapresent more complex patterns in the data.
-	public static double activationFunction(double x) {
+	@Override
+	public double activate(double x){
 		return sigmoid(x);
 		//return Math.max(0, x);
 		//return x;
@@ -64,8 +63,4 @@ public class neuron {
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
 	}
-	
-	
-	
-	
 }
