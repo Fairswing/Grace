@@ -25,7 +25,7 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		
-		pixel=20;
+		pixel=30;
 		imgDim=4;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
@@ -39,7 +39,6 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 
 	        		scervelo.addLayer(2);
-	        		scervelo.addLayer(4);
 	        		scervelo.addLayer(4);
 	        		scervelo.addLayer(1);
 	        		
@@ -80,13 +79,11 @@ public class DrawingPanel extends StackPane{
 	                drawBackground();
 	        		drawImage(TrainOut,imgX,imgY,pixel,imgDim);
 	        		
-	        		
 	        		// Training neural network
 	        		for(int i=0; i<100*1000; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			if(i%1000==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
-	        				drawNN(scervelo);
 	        			}
 	        			
 	        			List<Double> img = new ArrayList<>();
@@ -94,6 +91,7 @@ public class DrawingPanel extends StackPane{
 	        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
 	        		    	img.add(output.get(0));
 	        	        }
+	        			drawNN(scervelo);
         				drawImage(img,imgX,imgY*2+imgDim*pixel,pixel,imgDim);
         				
         				
@@ -169,7 +167,7 @@ public class DrawingPanel extends StackPane{
 		        for (Neuron currentNeuron : layer) {
 		        	int curLayer=scervelo.getLayers().indexOf(layer);
 		        	//g2d.setFill(Color.rgb(Math.abs((int)currentNeuron.getWeight(curLayer)%255), (int)255, (int)255));
-					g2d.fillOval(k*(pixel*2)+10, y*(pixel*2)+10, pixel, pixel);
+					g2d.fillOval(k*(pixel*2)+10, (y*(pixel*2)+10), pixel, pixel);
 					y++;
 		        }
 		        k++;
@@ -178,8 +176,10 @@ public class DrawingPanel extends StackPane{
 	}
 	
 	public static void drawBackground() {
-		g2d.setFill(Color.rgb(100, 100, 100));
-		g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		Platform.runLater(() -> {
+			g2d.setFill(Color.rgb(100, 100, 100));
+			g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		});
 	}
 	
 
