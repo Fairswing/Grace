@@ -104,7 +104,7 @@ public class NeuralNetwork {
 	}
 	
 	// Calculate the average of the differences between the expected outputs and the actual output.
-	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {//outTrainingData da rendere List<List<Double>> in caso ci si aspetti più output dalla rete neurale
+	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {//outTrainingData da rendere List<List<Double>> in caso ci si aspetti più output dalla rete neurale !!!
 	    double result = 0.0d;
 	    double errorPow = 0.0d;
 	    int trainCount = trainingData.size();
@@ -114,7 +114,7 @@ public class NeuralNetwork {
 	            double error = output.get(j) - outTrainingData.get(i);
 	            errorPow = error * error;// Used to emphasize errors, allowing the neural network to perceive them more easily.
 	            //result += errorPow * ( this.layers.get(this.layers.size()-1).get(0).activate(output.get(j)+eps) - this.layers.get(this.layers.size()-1).get(0).activate(output.get(j)) )/eps;
-	            //da vedere come e dove implementare la derivata della funzione di attivazione per il calcolo della gradient.
+	            //da vedere come e dove implementare la derivata della funzione di attivazione per il calcolo della gradient. !!!
 	            
 	            result += errorPow;
 	        }
@@ -146,7 +146,7 @@ public class NeuralNetwork {
 	    double c = cost(trainingData,outTrainingData);// Save the cost funcion's result before changing the weights by eps.
 	    
 	    // Backpropagation
-	    //for (int i=this.layers.size()-1; i>0; --i) {
+	    //for (int i=this.layers.size()-1; i>0; --i) { // sarebbe corretto partire dall'ultimo layer, vedere perchè non funziona, probabilmente problemi nel back propagation calcolato male !!!
 	    for (int i=1; i<this.layers.size(); ++i) {
 	    		List<Neuron> layer = List.copyOf(this.layers.get(i));
 		        for (Neuron currentNeuron : layer) {
