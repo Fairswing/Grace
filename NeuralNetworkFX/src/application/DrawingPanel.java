@@ -25,8 +25,8 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		
-		pixel=30;
-		imgDim=4;
+		pixel=20;
+		imgDim=12;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
 		
@@ -39,6 +39,7 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 
 	        		scervelo.addLayer(2);
+	        		scervelo.addLayer(4);
 	        		scervelo.addLayer(4);
 	        		scervelo.addLayer(1);
 	        		
@@ -159,21 +160,72 @@ public class DrawingPanel extends StackPane{
 		thread1.start();
 	}
 	
+	
+	
+	// Define offset variables
+	private int xOffset = 100;
+	private int yOffset = 10;
+
 	public void drawNN(NeuralNetwork scervelo) {
-		Platform.runLater(() -> {
-			int k=0;
-			for (List<Neuron> layer : scervelo.getLayers()) {
-				int y=0;
-		        for (Neuron currentNeuron : layer) {
-		        	int curLayer=scervelo.getLayers().indexOf(layer);
-		        	//g2d.setFill(Color.rgb(Math.abs((int)currentNeuron.getWeight(curLayer)%255), (int)255, (int)255));
-					g2d.fillOval(k*(pixel*2)+10, (y*(pixel*2)+10), pixel, pixel);
-					y++;
-		        }
-		        k++;
-			}
-		});
+	    Platform.runLater(() -> {
+	        int k = 0;
+	        for (List<Neuron> layer : scervelo.getLayers()) {
+	            int y = 0;
+	            for (Neuron currentNeuron : layer) {
+	                int curLayer = scervelo.getLayers().indexOf(layer);
+	                
+	                // Skip drawing connections for the input layer
+	                if (curLayer == 0) {
+	                    g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
+	                    y++;
+	                    continue;
+	                }
+	                
+	                List<Double> weights = currentNeuron.getWeights();
+	                
+	                // Iterate over neurons in the previous layer
+	                for (int i = 0; i < scervelo.getLayers().get(curLayer - 1).size(); i++) {
+	                    Neuron prevNeuron = scervelo.getLayers().get(curLayer - 1).get(i);
+	                    double weight = weights.get(i); // Get the weight corresponding to the connection between currentNeuron and prevNeuron
+	                    Color color = calculateColor(weight);
+	                    
+	                    // Draw connection line with color based on weight
+	                    drawConnection(((k - 1) * (pixel * 2) + xOffset)+pixel/2, (i * (pixel * 2) + yOffset)+pixel/2, (k * (pixel * 2) + xOffset)+pixel/2, (y * (pixel * 2) + yOffset)+pixel/2, color);
+	                }
+	                
+	                g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
+	                y++;
+	            }
+	            k++;
+	        }
+	    });
 	}
+
+
+
+	// Helper method to calculate color based on weight
+	private Color calculateColor(double weight) {
+	    // Map the weight to a value between 0 and 255
+	    int colorValue = (int) (Math.abs(weight) * 255);
+	    // Ensure the color value is within the valid range of 0 to 255
+	    colorValue = Math.min(Math.max(colorValue, 0), 255);
+	    // Use the color value for red component, and set green and blue to 0
+	    return Color.rgb(colorValue, 0, 0);
+	}
+
+	// Helper method to draw connection line with specified color
+	private void drawConnection(int x1, int y1, int x2, int y2, Color color) {
+	    g2d.setStroke(color);
+	    g2d.strokeLine(x1, y1, x2, y2);
+	}
+
+	// Method to set the offset variables
+	public void setOffset(int xOffset, int yOffset) {
+	    this.xOffset = xOffset;
+	    this.yOffset = yOffset;
+	}
+
+
 	
 	public static void drawBackground() {
 		Platform.runLater(() -> {
