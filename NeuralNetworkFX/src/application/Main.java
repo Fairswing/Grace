@@ -15,12 +15,14 @@ public class Main extends Application {
 	    
 	    @Override
 	    public void start(Stage primaryStage) throws Exception {
+	    		
+	    	System.out.println("ciao");
 	        panel = new DrawingPanel();
 	        //sliders = new Sliders();
 	        
 	        panel.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-	        primaryStage.setTitle("Particle's gravity Simulation");
+	        primaryStage.setTitle("Neural Network");
 	        primaryStage.setScene(new Scene(panel, panelWidth, panelHeight));
 	        
 	        primaryStage.show();
@@ -33,6 +35,7 @@ public class Main extends Application {
 	        });
 	        panel.start();
 	    }
+
 	
 	public static void main(String[] args) {
 		panelHeight=768;
