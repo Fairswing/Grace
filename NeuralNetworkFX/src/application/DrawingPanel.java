@@ -39,7 +39,7 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 
 	        		scervelo.addLayer(2);
-	        		scervelo.addLayer(2);
+	        		scervelo.addLayer(10);
 	        		scervelo.addLayer(1);
 	        		
 	        		// da capire come passare input e output.
