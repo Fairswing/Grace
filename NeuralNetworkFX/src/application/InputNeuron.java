@@ -4,6 +4,8 @@ import java.util.List;
 
 public class InputNeuron implements Neuron {
 	private List<Double> weights; // Only used to take in input
+	private double output;
+
 	public InputNeuron(int nInputs) {
 		super();
 		this.weights = new ArrayList<Double>();
@@ -52,6 +54,16 @@ public class InputNeuron implements Neuron {
 	
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
+	}
+
+	public void setOutput(double output) {
+		this.output = output;
+	}
+	
+	@Override
+	public double getOutput() {
+		// TODO Auto-generated method stub
+		return this.output;
 	}
 
 }

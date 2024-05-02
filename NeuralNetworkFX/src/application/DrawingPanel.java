@@ -25,8 +25,8 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		
-		pixel=20;
-		imgDim=12;
+		pixel=40;
+		imgDim=6;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
 		
@@ -39,12 +39,25 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 
 	        		scervelo.addLayer(2);
-	        		scervelo.addLayer(4);
-	        		scervelo.addLayer(4);
+	        		scervelo.addLayer(2);
 	        		scervelo.addLayer(1);
 	        		
+	        		// da capire come passare input e output.
+	        		List<List<Double>> TrainIn = new ArrayList<>();
+	        		List<Double> TrainOut = new ArrayList<>();
 	        		
+	        		TrainIn.add(List.of((double)0,(double)0));
+	        		TrainIn.add(List.of((double)0,(double)1));
+	        		TrainIn.add(List.of((double)1,(double)0));
+	        		TrainIn.add(List.of((double)1,(double)1));
 	        		
+	        		TrainOut.add((double)0);
+	        		TrainOut.add((double)1);
+	        		TrainOut.add((double)1);
+	        		TrainOut.add((double)0);
+	        		
+	        		// input image generation
+	        		/*
 	        		List<List<Double>> TrainIn = new ArrayList<>();
 	        		List<Double> TrainOut = new ArrayList<>();
 
@@ -75,18 +88,21 @@ public class DrawingPanel extends StackPane{
 	                        }
 	                    }
 	                }
-	        		
+	        		*/
 	                
 	                drawBackground();
-	        		drawImage(TrainOut,imgX,imgY,pixel,imgDim);
+	        		//drawImage(TrainOut,imgX,imgY,pixel,imgDim);
 	        		
 	        		// Training neural network
-	        		for(int i=0; i<100*1000; ++i) {
+	        		for(int i=0; i<1000*100; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
+	        			// DEBUG
 	        			if(i%1000==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
-	        			
+	        			drawNN(scervelo);
+
+	        			/*
 	        			List<Double> img = new ArrayList<>();
 	        			for (int y = 0; y < TrainIn.size(); ++y) {
 	        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
@@ -94,7 +110,7 @@ public class DrawingPanel extends StackPane{
 	        	        }
 	        			drawNN(scervelo);
         				drawImage(img,imgX,imgY*2+imgDim*pixel,pixel,imgDim);
-        				
+        				*/
         				
 	        		}
 	        		
@@ -125,6 +141,7 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		
 	        		// Print images 
+	        		/*
 	        		System.out.println("given image:");
 	        		for (int i = 0; i < TrainOut.size(); ++i) {
         				if(TrainOut.get(i)>=0.5d) {
@@ -151,7 +168,7 @@ public class DrawingPanel extends StackPane{
         				}
 	        			
 	                }
-	        		
+	        		*/
 	            }
            });
 	}
@@ -176,6 +193,7 @@ public class DrawingPanel extends StackPane{
 	                
 	                // Skip drawing connections for the input layer
 	                if (curLayer == 0) {
+	                	g2d.setFill(Color.BLACK);
 	                    g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
 	                    y++;
 	                    continue;
@@ -192,7 +210,7 @@ public class DrawingPanel extends StackPane{
 	                    // Draw connection line with color based on weight
 	                    drawConnection(((k - 1) * (pixel * 2) + xOffset)+pixel/2, (i * (pixel * 2) + yOffset)+pixel/2, (k * (pixel * 2) + xOffset)+pixel/2, (y * (pixel * 2) + yOffset)+pixel/2, color);
 	                }
-	                
+                	g2d.setFill(Color.BLACK);
 	                g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
 	                y++;
 	            }

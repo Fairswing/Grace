@@ -28,8 +28,8 @@ public class NeuralNetwork {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
 		this.learning_rate=2d;
-		this.eps=1e-1d;
-		this.momentumFactor=0.2d;
+		this.eps=1d;
+		this.momentumFactor=0.3d;
 	}
 	
 	public int getnWeightsXNeuron() {
@@ -83,6 +83,7 @@ public class NeuralNetwork {
 			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size()));
 	}
 	
+	
 	public List<Double> forward(List<Double> inputs) {
 		List<Double> currentInputs = new ArrayList<>(inputs);
 	    double neuronOutput;
@@ -102,6 +103,7 @@ public class NeuralNetwork {
 	        	for (Neuron neuron : layer) {
 			        neuronOutput = neuron.calculate(currentInputs);
 			        layerOutputs.add(neuronOutput);
+			        neuron.setOutput(neuronOutput);
 		        }	   
 	        }
 	        // Update inputs for the next layer
@@ -149,37 +151,34 @@ public class NeuralNetwork {
 	    // Forward pass.
 	    double c = cost(trainingData,outTrainingData);// Save the cost funcion's result before changing the weights by eps.
 	    
-	    //System.out.println("output neuron weights: "+ this.layers.get(this.layers.size()-1).get(0).getWeights());
-	    
 	    // Backpropagation
-	    //for (int i=this.layers.size()-1; i>0; --i) {
-	    for (int i=1; i<this.layers.size(); ++i) {
-	        for (Neuron currentNeuron : this.layers.get(i)) {
-	        	// Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
+	    for (int i=this.layers.size()-1; i>0; --i) {
+	    //for (int i=1; i<this.layers.size(); ++i) {
+	    	for (Neuron currentNeuron : this.layers.get(i)) {
+	            // Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
 	            List<Double> curWeights = currentNeuron.getWeights();
+	            double output = currentNeuron.getOutput(); // get the output of the neuron
+	            double derivative = output * (1 - output); // calculate the derivative of the activation function
 	            for(int j=0;j<curWeights.size(); ++j) {
-	            	savedWeight = curWeights.get(j);// Adding and then subtracting eps would cause inconsistencies in the doubles.
-	            	curWeights.set(j, savedWeight+eps);
-	            	finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps); // FiniteDifference (approximation of the derivative of the cost function)
-	            	prevVt = vt;
-		            vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
-	            	curWeights.set(j, savedWeight-vt);
+	                savedWeight = curWeights.get(j);
+	                curWeights.set(j, savedWeight+eps);
+	                finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * derivative; // multiply the finite difference by the derivative of the activation function
+	                prevVt = vt;
+	                vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
+	                curWeights.set(j, savedWeight-vt);
 	            }
 	            // Do the same for the bias of each neuron.
 	            savedBias =currentNeuron.getBias();
 	            currentNeuron.setBias(currentNeuron.getBias()+eps);
-	            finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps);
+	            finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * derivative; // multiply the finite difference by the derivative of the activation function
 	            currentNeuron.setBias(savedBias);
 	            
-	            //* momentum is used to dynamically modify the learning rate 
-	            //* https://collab.dvb.bayern/display/TUMlfdv/Adaptive+Learning+Rate+Method#AdaptiveLearningRateMethod-AdaptiveLearningRateMethod
-	            //*
-	           
 	            prevVt = vt;
 	            vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
 	            currentNeuron.setBias(currentNeuron.getBias() - vt);
 	            
 	        }
-		}
+	    }
 	}
+
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class RegularNeuron implements Neuron{
 	private List<Double> weights;
 	private double bias;
+	private double output;
 	
 	public RegularNeuron(int nWeights) {
 		super();
@@ -62,5 +63,19 @@ public class RegularNeuron implements Neuron{
 	
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
+	}
+
+
+
+	public void setOutput(double output) {
+		this.output = output;
+	}
+
+
+
+	@Override
+	public double getOutput() {
+		// TODO Auto-generated method stub
+		return this.output;
 	}
 }
