@@ -37,13 +37,30 @@ public class DrawingPanel extends StackPane{
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	        		scervelo.setnWeightsXNeuron(1);
+	        		ArrayList<Cancer> data = DataReader.getCSV();;
+	        		ArrayList<List<Double>> TrainIn = new ArrayList<List<Double>>();
+	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
+	        		
+	        		for(int i = 0; i < data.size(); i++) {
+	        			double diagnosis;
+	        			
+	        			if(data.get(i).getDiagnosis() == "M")
+	        				diagnosis = 0;
+	        			else
+	        				diagnosis = 1;
+	        			
+	        			TrainOut.add(diagnosis);
+	        			
+	        			TrainIn.add(data.get(i).getAllData());
+	        			
+	        		}
 
-	        		scervelo.addLayer(2);
+	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(10);
 	        		scervelo.addLayer(1);
 	        		
-	        		// da capire come passare input e output.
-	        		List<List<Double>> TrainIn = new ArrayList<>();
+	        		// parte per training per XOR
+	        		/*List<List<Double>> TrainIn = new ArrayList<>();
 	        		List<Double> TrainOut = new ArrayList<>();
 	        		
 	        		TrainIn.add(List.of((double)0,(double)0));
@@ -54,7 +71,7 @@ public class DrawingPanel extends StackPane{
 	        		TrainOut.add((double)0);
 	        		TrainOut.add((double)1);
 	        		TrainOut.add((double)1);
-	        		TrainOut.add((double)0);
+	        		TrainOut.add((double)0);*/
 	        		
 	        		// input image generation
 	        		/*
@@ -93,6 +110,9 @@ public class DrawingPanel extends StackPane{
 	                drawBackground();
 	        		//drawImage(TrainOut,imgX,imgY,pixel,imgDim);
 	        		
+	                // for debugging purpose only
+	                //System.out.println(data.size());
+	                
 	        		// Training neural network
 	        		for(int i=0; i<1000*100; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
