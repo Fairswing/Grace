@@ -1,6 +1,6 @@
 # neuroBasicAI
 
-to run the program are needed the "javaFX" and "javaCSV" library
+to run the program the "javaFX" and "javaCSV" libraries are needed 
 https://openjfx.io/
 https://www.csvreader.com/java_csv.php
 
