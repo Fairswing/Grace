@@ -25,7 +25,7 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		
-		pixel=40;
+		pixel=10;
 		imgDim=6;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
@@ -37,6 +37,13 @@ public class DrawingPanel extends StackPane{
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	        		scervelo.setnWeightsXNeuron(1);
+	        		
+	        		scervelo.addLayer(30);
+	        		scervelo.addLayer(5);
+	        		scervelo.addLayer(5);
+	        		scervelo.addLayer(1);
+	        		
+	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
 	        		ArrayList<List<Double>> TrainIn = new ArrayList<List<Double>>();
 	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
@@ -54,10 +61,6 @@ public class DrawingPanel extends StackPane{
 	        			TrainIn.add(data.get(i).getAllData());
 	        			
 	        		}
-
-	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(60);
-	        		scervelo.addLayer(1);
 	        		
 	        		// parte per training per XOR
 	        		/*List<List<Double>> TrainIn = new ArrayList<>();
@@ -114,7 +117,7 @@ public class DrawingPanel extends StackPane{
 	                //System.out.println(data.size());
 	                
 	        		// Training neural network
-	        		for(int i=0; i<5; ++i) {
+	        		for(int i=0; i<1000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%1==0) {
