@@ -1,4 +1,4 @@
-# neuroBasicAI
+# neuronBasicAI
 
 to run the program the "javaFX" and "javaCSV" libraries are needed 
 https://openjfx.io/
