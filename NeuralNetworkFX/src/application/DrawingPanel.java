@@ -114,10 +114,10 @@ public class DrawingPanel extends StackPane{
 	                //System.out.println(data.size());
 	                
 	        		// Training neural network
-	        		for(int i=0; i<1000*100; ++i) {
+	        		for(int i=0; i<1000; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%1000==0) {
+	        			if(i%1==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
