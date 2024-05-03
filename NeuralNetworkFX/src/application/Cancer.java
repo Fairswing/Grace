@@ -2,8 +2,7 @@ package application;
 
 public class Cancer {
 	
-	private String id;
-	private char diagnosis;
+	private String id, diagnosis;
 	private float radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean, compactness_mean, concavity_mean, concave_points_mean, 
 			symmetry_mean, fractal_dimension_mean, radius_se, texture_se, perimeter_se, area_se, smoothness_se, 
 			compactness_se, concavity_se, concave_points_se, symmetry_se, fractal_dimension_se, radius_worst, 
@@ -44,7 +43,7 @@ public class Cancer {
 	 * @param symmetry_worst
 	 * @param fractal_dimension_worst
 	 */
-	public Cancer(String id, char diagnosis, float radius_mean, float texture_mean, float perimeter_mean,
+	public Cancer(String id, String diagnosis, float radius_mean, float texture_mean, float perimeter_mean,
 			float area_mean, float smoothness_mean, float compactness_mean, float concavity_mean,
 			float concave_points_mean, float symmetry_mean, float fractal_dimension_mean, float radius_se,
 			float texture_se, float perimeter_se, float area_se, float smoothness_se, float compactness_se,
@@ -104,14 +103,14 @@ public class Cancer {
 	/**
 	 * @return the diagnosis
 	 */
-	public char getDiagnosis() {
+	public String getDiagnosis() {
 		return diagnosis;
 	}
 
 	/**
 	 * @param diagnosis the diagnosis to set
 	 */
-	public void setDiagnosis(char diagnosis) {
+	public void setDiagnosis(String diagnosis) {
 		this.diagnosis = diagnosis;
 	}
 

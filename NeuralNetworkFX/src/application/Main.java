@@ -1,5 +1,5 @@
 package application;
-	
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -32,6 +32,7 @@ public class Main extends Application {
 	                System.exit(0);
 	            }
 	        });
+	        
 	        panel.start();
 	    }
 
@@ -39,7 +40,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		panelHeight=768;
-		panelWidth=1366;
+		panelWidth=450;
 		launch(args);		
 	}
 }
