@@ -1,11 +1,8 @@
 # neuroBasicAI
 
-suca
-
-
-per runnare il programma bisogna scaricare java fx 
+to run the program are needed the "javaFX" and "javaCSV" library
 https://openjfx.io/
-https://www.youtube.com/watch?v=nz8P528uGjk //tutorial per importare la libreria su eclipse
+https://www.csvreader.com/java_csv.php
 
-come parametri VM in run config mettere:
---module-path "C:\-PATH TO JAVAFX-\JavaFX\javafx-sdk-19.0.2.1\lib" --add-modules javafx.controls,javafx.fxml
+these are the parameters needed in the java build config vm
+--module-path "%PATH_TO_JAVAFX%\lib" --add-modules javafx.controls,javafx.fxml
