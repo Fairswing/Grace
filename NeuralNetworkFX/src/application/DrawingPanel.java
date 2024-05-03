@@ -44,7 +44,7 @@ public class DrawingPanel extends StackPane{
 	        		for(int i = 0; i < data.size(); i++) {
 	        			double diagnosis;
 	        			
-	        			if(data.get(i).getDiagnosis() == "M")
+	        			if("M".equals(data.get(i).getDiagnosis()))
 	        				diagnosis = 0;
 	        			else
 	        				diagnosis = 1;
@@ -56,7 +56,7 @@ public class DrawingPanel extends StackPane{
 	        		}
 
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(10);
+	        		scervelo.addLayer(60);
 	        		scervelo.addLayer(1);
 	        		
 	        		// parte per training per XOR
@@ -114,7 +114,7 @@ public class DrawingPanel extends StackPane{
 	                //System.out.println(data.size());
 	                
 	        		// Training neural network
-	        		for(int i=0; i<1000; ++i) {
+	        		for(int i=0; i<5; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%1==0) {
