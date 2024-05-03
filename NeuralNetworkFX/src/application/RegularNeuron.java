@@ -1,19 +1,23 @@
 package application;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RegularNeuron implements Neuron{
 	private List<Double> weights;
 	private double bias;
 	private double output;
+	private String activationFunction;
 	
-	public RegularNeuron(int nWeights) {
+	public RegularNeuron(int nWeights, String activationFunction) {
 		super();
 		this.weights = new ArrayList<Double>();
 		for(int i=0;i<nWeights; ++i) {
-			this.weights.add((double)Math.random());// randomize the initial value of the weight
+			Random rand = new Random();
+			this.weights.add((double)rand.nextGaussian() * Math.sqrt(2.0 / nWeights));// randomize the initial value of the weight
 		}
 		this.bias = (double)Math.random(); // should be randomly initialized like weights
+		this.activationFunction=activationFunction;
 	}
 
 	
@@ -53,16 +57,27 @@ public class RegularNeuron implements Neuron{
 		return activate(result);
 	}
 	
+	//aggiunta poissibilità di scegliere che tipo di funzione di attivazione usare.
 	@Override
 	public double activate(double x){
-		return sigmoid(x);
-		//return Math.max(0, x);
-		//return x;
+		if(activationFunction==null) {
+			return x;
+		}
+		if(activationFunction.contentEquals("sigmoid")) {
+			return sigmoid(x);
+		}
+		if(activationFunction.contentEquals("relu")) {
+			return relu(x);
+		}
+		return x;
 	}
 	
 	
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
+	}
+	public static double relu(double x) {
+	    return Math.max(0,x);
 	}
 
 

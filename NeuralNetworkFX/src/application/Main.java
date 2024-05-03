@@ -39,8 +39,8 @@ public class Main extends Application {
 
 	
 	public static void main(String[] args) {
-		panelHeight=768;
-		panelWidth=450;
+		panelHeight=1000;
+		panelWidth=1000;
 		launch(args);		
 	}
 }

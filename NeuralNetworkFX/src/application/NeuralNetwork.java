@@ -29,7 +29,7 @@ public class NeuralNetwork {
 		this.layers = new ArrayList<List<Neuron>>();
 		this.learning_rate=1d;
 		this.eps=1e-1d;
-		this.momentumFactor=0d;
+		this.momentumFactor=0.0d;
 	}
 	
 	public int getnWeightsXNeuron() {
@@ -69,18 +69,24 @@ public class NeuralNetwork {
 		this.layers.add(new ArrayList<Neuron>());
 	}
 	
+	public void addLayer(int nNeurons, String activationFunction) {
+		this.layers.add(new ArrayList<Neuron>());
+		for(int i=0;i<nNeurons;i++) {
+			this.addNeuronToLayer(layers.size()-1, activationFunction);
+		}
+	}
 	public void addLayer(int nNeurons) {
 		this.layers.add(new ArrayList<Neuron>());
 		for(int i=0;i<nNeurons;i++) {
-			this.addNeuronToLayer(layers.size()-1);
+			this.addNeuronToLayer(layers.size()-1, null);
 		}
 	}
 	
-	public void addNeuronToLayer(int layerIndex) {
+	public void addNeuronToLayer(int layerIndex, String activationFunction) {
 		if(layerIndex == 0)
 			this.layers.get(layerIndex).add(new InputNeuron(1));
 		else
-			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size()));
+			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size(), activationFunction));
 	}
 	
 	

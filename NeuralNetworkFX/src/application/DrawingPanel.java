@@ -25,7 +25,7 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		
-		pixel=10;
+		pixel=15;
 		imgDim=6;
 		imgY= 50;
 		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
@@ -38,10 +38,12 @@ public class DrawingPanel extends StackPane{
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	        		scervelo.setnWeightsXNeuron(1);
 	        		
+	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
+	        		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(3);
-	        		scervelo.addLayer(3);
-	        		scervelo.addLayer(1);
+	        		scervelo.addLayer(5, "sigmoid");
+	        		scervelo.addLayer(5, "sigmoid");
+	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
@@ -57,83 +59,18 @@ public class DrawingPanel extends StackPane{
 	        				diagnosis = 1;
 	        			
 	        			TrainOut.add(diagnosis);
-	        			
 	        			TrainIn.add(data.get(i).getAllData());
-	        			
 	        		}
 	        		
-	        		// parte per training per XOR
-	        		/*List<List<Double>> TrainIn = new ArrayList<>();
-	        		List<Double> TrainOut = new ArrayList<>();
-	        		
-	        		TrainIn.add(List.of((double)0,(double)0));
-	        		TrainIn.add(List.of((double)0,(double)1));
-	        		TrainIn.add(List.of((double)1,(double)0));
-	        		TrainIn.add(List.of((double)1,(double)1));
-	        		
-	        		TrainOut.add((double)0);
-	        		TrainOut.add((double)1);
-	        		TrainOut.add((double)1);
-	        		TrainOut.add((double)0);*/
-	        		
-	        		// input image generation
-	        		/*
-	        		List<List<Double>> TrainIn = new ArrayList<>();
-	        		List<Double> TrainOut = new ArrayList<>();
 
-	        		for(int i=0; i<imgDim; ++i){
-	        			for(int y=0; y<imgDim; ++y){
-		        			TrainIn.add(List.of((double)i/(imgDim-1),(double)y/(imgDim-1)));
-		        		}
-	        		}
-	        		
-	        		// Generating sphere
-	        		// Center coordinates of the sphere
-	                double centerX = imgDim / 2.0d;
-	                double centerY = imgDim / 2.0d;
-	                double radius = imgDim / 4.0d;
-
-	                for (int row = 0; row < imgDim; ++row) {
-	                    for (int col = 0; col < imgDim; ++col) {
-	                        // Calculate the distance from the current pixel to the center of the sphere
-	                        double distance = (double) Math.sqrt(Math.pow(col - centerX, 2) + Math.pow(row - centerY, 2));
-
-	                        // Check if the pixel is within the sphere
-	                        if (distance <= radius) {
-	                            // Use shading based on the distance from the center
-	                            double intensity = 1.0d - (distance / radius); // Linear shading
-	                            TrainOut.add(intensity);
-	                        } else {
-	                            TrainOut.add(0.0d);
-	                        }
-	                    }
-	                }
-	        		*/
-	                
 	                drawBackground();
-	        		//drawImage(TrainOut,imgX,imgY,pixel,imgDim);
-	        		
-	                // for debugging purpose only
-	                //System.out.println(data.size());
-	                
-	        		// Training neural network
 	        		for(int i=0; i<1000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%1==0) {
+	        			if(i%10==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
-
-	        			/*
-	        			List<Double> img = new ArrayList<>();
-	        			for (int y = 0; y < TrainIn.size(); ++y) {
-	        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
-	        		    	img.add(output.get(0));
-	        	        }
-	        			drawNN(scervelo);
-        				drawImage(img,imgX,imgY*2+imgDim*pixel,pixel,imgDim);
-        				*/
         				
 	        		}
 	        		
@@ -155,43 +92,11 @@ public class DrawingPanel extends StackPane{
 	        		// Print the results.
 	        		System.out.println("--------------------------- RESULT");
 	        		for (int i = 0; i < TrainIn.size(); ++i) {
-	        			System.out.print("input: "+TrainIn.get(i).toString());
+	        			//System.out.print("input: "+TrainIn.get(i).toString());
 	        	        System.out.print("\tExpected output: "+TrainOut.get(i).toString());
 	        	        System.out.print(" | Actual output: "+ img.get(i).toString());
 	        	        System.out.println(" \tError: [ "+ (TrainOut.get(i) - img.get(i)) + " ]");
 	                }
-	        		
-	        		
-	        		
-	        		// Print images 
-	        		/*
-	        		System.out.println("given image:");
-	        		for (int i = 0; i < TrainOut.size(); ++i) {
-        				if(TrainOut.get(i)>=0.5d) {
-        					System.out.print("■");
-        				}else {
-        					System.out.print("□");
-        				}
-        				if(((i+1)%imgDim)==0) {
-        					System.out.println("");
-        				}
-	        			
-	                }
-	        		
-	        		System.out.println("NN image:");
-	        		for (int i = 0; i < img.size(); ++i) {
-
-        				if(img.get(i)>=0.5d) {
-        					System.out.print("■");
-        				}else {
-        					System.out.print("□");
-        				}
-        				if(((i+1)%imgDim)==0) {
-        					System.out.println("");
-        				}
-	        			
-	                }
-	        		*/
 	            }
            });
 	}
@@ -203,23 +108,30 @@ public class DrawingPanel extends StackPane{
 	
 	
 	// Define offset variables
-	private int xOffset = 100;
+	private int xOffset = 80;
 	private int yOffset = 10;
-
+	private int yMaxNNHeight = 60;
 	public void drawNN(NeuralNetwork scervelo) {
 	    Platform.runLater(() -> {
+	    	int layerYOffset=0;
+	    	int prevLayerYOffset=0;
 	        int k = 0;
 	        for (List<Neuron> layer : scervelo.getLayers()) {
+	        	int curLayer = scervelo.getLayers().indexOf(layer);
 	            int y = 0;
+	            prevLayerYOffset=layerYOffset;
+	            layerYOffset=yMaxNNHeight/scervelo.getLayers().get(curLayer).size();
+	            
 	            for (Neuron currentNeuron : layer) {
-	                int curLayer = scervelo.getLayers().indexOf(layer);
-	                
 	                // Skip drawing connections for the input layer
 	                if (curLayer == 0) {
 	                	g2d.setFill(Color.BLACK);
-	                    g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
+	                    g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
 	                    y++;
 	                    continue;
+	                }else {
+	    	            
+
 	                }
 	                
 	                List<Double> weights = currentNeuron.getWeights();
@@ -231,10 +143,10 @@ public class DrawingPanel extends StackPane{
 	                    Color color = calculateColor(weight);
 	                    
 	                    // Draw connection line with color based on weight
-	                    drawConnection(((k - 1) * (pixel * 2) + xOffset)+pixel/2, (i * (pixel * 2) + yOffset)+pixel/2, (k * (pixel * 2) + xOffset)+pixel/2, (y * (pixel * 2) + yOffset)+pixel/2, color);
+	                    drawConnection(((k - 1) * (pixel+xOffset)+xOffset)+pixel/2, (i * (pixel*prevLayerYOffset) + yOffset+pixel*prevLayerYOffset/2)+pixel/2, (k * (pixel+xOffset)+xOffset)+pixel/2, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2)+pixel/2, color);
 	                }
                 	g2d.setFill(Color.BLACK);
-	                g2d.fillOval(k * (pixel * 2) + xOffset, (y * (pixel * 2) + yOffset), pixel, pixel);
+	                g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
 	                y++;
 	            }
 	            k++;
