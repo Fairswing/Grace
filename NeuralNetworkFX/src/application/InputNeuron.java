@@ -15,13 +15,15 @@ public class InputNeuron implements Neuron {
 	}
 
 	
+	@SuppressWarnings("null")	// warning suppressed because fully unfixable
 	@Override
 	public double getBias() {
-		return (Double) null;
+		return  (Double) null;
 	}
 	@Override
 	public void setBias(double bias) {
 	}
+	@SuppressWarnings("null")	// warning suppressed because fully unfixable
 	@Override
 	public double getWeight(int index) {
 		return (Double) null;

@@ -15,8 +15,10 @@ public class DrawingPanel extends StackPane{
 	private Thread thread1;
 	private static int pixel;// pixel dimension
 	private static int imgDim; // image dimension
-	private static int imgX; // image X position
-	private static int imgY; // image y position
+	
+	// sconosciuta la funzionalità, Andre?
+	//private static int imgX; // image X position
+	//private static int imgY; // image y position
 	
 	public DrawingPanel() throws IOException {
 		canvas = new Canvas();
@@ -27,8 +29,10 @@ public class DrawingPanel extends StackPane{
 		
 		pixel=15;
 		imgDim=6;
-		imgY= 50;
-		imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
+		
+		// sconosciuta la funzionalità, Andre?
+		//imgY= 50;
+		//imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
 		
 		
 
@@ -138,7 +142,6 @@ public class DrawingPanel extends StackPane{
 	                
 	                // Iterate over neurons in the previous layer
 	                for (int i = 0; i < scervelo.getLayers().get(curLayer - 1).size(); i++) {
-	                    Neuron prevNeuron = scervelo.getLayers().get(curLayer - 1).get(i);
 	                    double weight = weights.get(i); // Get the weight corresponding to the connection between currentNeuron and prevNeuron
 	                    Color color = calculateColor(weight);
 	                    
