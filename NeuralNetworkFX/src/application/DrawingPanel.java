@@ -39,8 +39,8 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.setnWeightsXNeuron(1);
 	        		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(5);
-	        		scervelo.addLayer(5);
+	        		scervelo.addLayer(3);
+	        		scervelo.addLayer(3);
 	        		scervelo.addLayer(1);
 	        		
 	        		
