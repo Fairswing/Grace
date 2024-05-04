@@ -66,7 +66,7 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<2000*10; ++i) {
+	        		for(int i=0; i<5000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%10==0) {
@@ -90,7 +90,9 @@ public class DrawingPanel extends StackPane{
         		    	List<Double> output = scervelo.forward(TrainIn.get(y));
         		    	img.add(output.get(0));
         	        }
-	        		
+        			
+        			double maxError = TrainOut.get(0) - img.get(0);
+        			
 	        		// Print the results.
 	        		System.out.println("--------------------------- RESULT");
 	        		for (int i = 0; i < TrainIn.size(); ++i) {
@@ -98,7 +100,12 @@ public class DrawingPanel extends StackPane{
 	        	        System.out.print("\tExpected output: "+TrainOut.get(i).toString());
 	        	        System.out.print(" | Actual output: "+ img.get(i).toString());
 	        	        System.out.println(" \tError: [ "+ (TrainOut.get(i) - img.get(i)) + " ]");
+	        	        
+	        	        if(maxError < TrainOut.get(i) - img.get(i))
+	        	        	maxError = TrainOut.get(i) - img.get(i);
 	                }
+	        		System.out.println("--------------------------- ERRORE MASSIMO");
+	        		System.out.println(maxError);
 	            }
            });
 	}
