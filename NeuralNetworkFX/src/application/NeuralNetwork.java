@@ -82,7 +82,7 @@ public class NeuralNetwork {
 	
 	public void addNeuronToLayer(int layerIndex, String activationFunction) {
 		if(layerIndex == 0)
-			this.layers.get(layerIndex).add(new InputNeuron(1));
+			this.layers.get(layerIndex).add(new InputNeuron());
 		else
 			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size(), activationFunction));
 	}
@@ -97,14 +97,16 @@ public class NeuralNetwork {
 	        if(this.layers.indexOf(layer)==0) {
 		        int neuronIndex = 0;
 				for (Neuron neuron : layer) {
+					// Just for the input layer every neuron gets one input each.
 			    	// Extract the inputs for the current neuron
-			        neuronInputs = currentInputs.subList(neuronIndex, neuronIndex + neuron.getWeights().size());
-			        neuronOutput = neuron.calculate(neuronInputs);
+					neuronInputs = List.of(currentInputs.get(neuronIndex));
+					neuronOutput = neuron.calculate(neuronInputs);
 			        layerOutputs.add(neuronOutput);
-			        neuronIndex=neuronIndex+neuron.getWeights().size()%currentInputs.size();
+					neuronIndex++;
 		        }	
 	        }else {
 	        	for (Neuron neuron : layer) {
+	        		// other layer's neurons get every previous neuron's output as input each.
 			        neuronOutput = neuron.calculate(currentInputs);
 			        layerOutputs.add(neuronOutput);
 			        neuron.setOutput(neuronOutput);
@@ -116,8 +118,8 @@ public class NeuralNetwork {
 	    return currentInputs; // Return the output of the last layer
 	}
 	
-	// Calculate the average of the differences between the expected outputs and the actual output.
-	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {//outTrainingData da rendere List<List<Double>> in caso ci si aspetti più output dalla rete neurale !!!
+	// Calculate the average of the differences between the expected outputs and the actual output using the MSE cost function formula.
+	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {
 	    double result = 0.0d;
 	    double errorPow = 0.0d;
 	    int trainCount = trainingData.size();
@@ -158,24 +160,27 @@ public class NeuralNetwork {
 	    // Backpropagation
 	    for (int i=this.layers.size()-1; i>0; --i) {
 	    	for (Neuron currentNeuron : this.layers.get(i)) {
-	            // Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
 	            List<Double> curWeights = currentNeuron.getWeights();
 	            double output = currentNeuron.getOutput(); // get the output of the neuron
-	            double derivative = output * (1 - output); // calculate the derivative of the activation function
+	            double AFDerivative = currentNeuron.AFDerivative(output); // Calculate the derivative of the activation function
+	            
+	            // Calculate the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
 	            for(int j=0;j<curWeights.size(); ++j) {
 	                savedWeight = curWeights.get(j);
 	                curWeights.set(j, savedWeight+eps);
-	                finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * derivative; // multiply the finite difference by the derivative of the activation function
+	                finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps); // Calculate the finite difference of the cost function.
+	                finiteDiff*= AFDerivative; // Multiply the finite difference by the derivative of the activation function
+	                // Calculate velocity, and applying momentum
 	                prevVt = vt;
 	                vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
 	                curWeights.set(j, savedWeight-vt);
 	            }
-	            // Do the same for the bias of each neuron.
+	            // Doing the same for the bias of each neuron.
 	            savedBias =currentNeuron.getBias();
 	            currentNeuron.setBias(currentNeuron.getBias()+eps);
-	            finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * derivative; // multiply the finite difference by the derivative of the activation function
+	            finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * AFDerivative; // Multiply the finite difference by the derivative of the activation function
 	            currentNeuron.setBias(savedBias);
-	            
+	            // Calculate velocity, and applying momentum
 	            prevVt = vt;
 	            vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
 	            currentNeuron.setBias(currentNeuron.getBias() - vt);

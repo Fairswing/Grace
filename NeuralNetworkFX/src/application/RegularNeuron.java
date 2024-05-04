@@ -71,13 +71,32 @@ public class RegularNeuron implements Neuron{
 		}
 		return x;
 	}
-	
+	public double AFDerivative(double x) {
+		if(activationFunction==null) {
+			return x;
+		}
+		if(activationFunction.contentEquals("sigmoid")) {
+			return sigmoidDerivative(x);
+		}
+		if(activationFunction.contentEquals("relu")) {
+			return reluDerivative(x);
+		}
+		return x;
+	}
 	
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
 	}
+	public static double sigmoidDerivative(double x) {
+	    return (double) x * (1 - x);
+	}
+	
+	
 	public static double relu(double x) {
 	    return Math.max(0,x);
+	}
+	public static double reluDerivative(double x) {
+        return x > 0 ? 1 : 0;
 	}
 
 

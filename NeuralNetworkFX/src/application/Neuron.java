@@ -22,7 +22,7 @@ public interface Neuron {
 	
 	// activation function:  adds bends and curvature to an otherwise linear output allowing it to capture and rapresent more complex patterns in the data.
 	public double activate(double x);
-
+	public double AFDerivative(double x);
 	
 
 }

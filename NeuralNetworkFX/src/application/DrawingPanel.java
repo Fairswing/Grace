@@ -38,7 +38,8 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(3, "relu");
+	        		scervelo.addLayer(4, "relu");
+	        		scervelo.addLayer(2, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
@@ -55,7 +56,6 @@ public class DrawingPanel extends StackPane{
 	        				diagnosis = 1;
 	        			
 	        			TrainOut.add(diagnosis);
-	        			//TrainIn.add(data.get(i).getAllData());
 	        			TrainIn.add(data.get(i).getAllNormalizedData());
 	        			
 	        			// for debugging purpose only

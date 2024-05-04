@@ -6,12 +6,10 @@ public class InputNeuron implements Neuron {
 	private List<Double> weights; // Only used to take in input
 	private double output;
 
-	public InputNeuron(int nInputs) {
+	public InputNeuron() {
 		super();
 		this.weights = new ArrayList<Double>();
-		for(int i=0;i<nInputs; ++i) {
-			this.weights.add(1d); //fixed value.
-		}
+		this.weights.add(1d); //fixed value.
 	}
 
 	
@@ -48,11 +46,12 @@ public class InputNeuron implements Neuron {
 	
 	@Override
 	public double activate(double x){
-		//return sigmoid(x);
-		//return Math.max(0, x);
 		return x;
 	}
-	
+	@Override
+	public double AFDerivative(double x) {
+		return x;
+	}
 	
 	public static double sigmoid(double x) {
 	    return (double) (1.f / (1.f + (double)Math.exp(-x)));
@@ -67,5 +66,8 @@ public class InputNeuron implements Neuron {
 		// TODO Auto-generated method stub
 		return this.output;
 	}
+
+
+	
 
 }
