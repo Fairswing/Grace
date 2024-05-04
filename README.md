@@ -1,5 +1,7 @@
 # neuronBasicAI
 
+The name stands for Generic Risk Assessment and Cancer Evaluation
+
 to run the program the "javaFX" and "javaCSV" libraries are needed 
 https://openjfx.io/
 https://www.csvreader.com/java_csv.php
