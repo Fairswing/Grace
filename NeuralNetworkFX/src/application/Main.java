@@ -21,7 +21,7 @@ public class Main extends Application {
 	        
 	        panel.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-	        primaryStage.setTitle("Neural Network");
+	        primaryStage.setTitle("Grace");
 	        primaryStage.setScene(new Scene(panel, panelWidth, panelHeight));
 	        
 	        primaryStage.show();
