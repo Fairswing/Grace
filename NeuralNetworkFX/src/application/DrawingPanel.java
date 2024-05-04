@@ -37,9 +37,9 @@ public class DrawingPanel extends StackPane{
 	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
 	        		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(5, "sigmoid");
-	        		scervelo.addLayer(5, "sigmoid");
-	        		scervelo.addLayer(5, "sigmoid");
+	        		scervelo.addLayer(10, "relu");
+	        		scervelo.addLayer(5, "relu");
+	        		scervelo.addLayer(5, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
