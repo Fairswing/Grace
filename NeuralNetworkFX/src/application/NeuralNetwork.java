@@ -134,7 +134,6 @@ public class NeuralNetwork {
 	    result /= (2*trainCount);
 	    return result;
 	}
-
 	
 	/*
 	 * 
