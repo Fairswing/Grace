@@ -16,10 +16,6 @@ public class DrawingPanel extends StackPane{
 	private static int pixel;// pixel dimension
 	private static int imgDim; // image dimension
 	
-	// sconosciuta la funzionalità, Andre?
-	//private static int imgX; // image X position
-	//private static int imgY; // image y position
-	
 	public DrawingPanel() throws IOException {
 		canvas = new Canvas();
 		getChildren().add(canvas);
@@ -29,10 +25,6 @@ public class DrawingPanel extends StackPane{
 		
 		pixel=15;
 		imgDim=6;
-		
-		// sconosciuta la funzionalità, Andre?
-		//imgY= 50;
-		//imgX= (int)(Main.panelWidth/2)-(imgDim*pixel)/2;
 		
 		
 
@@ -45,6 +37,7 @@ public class DrawingPanel extends StackPane{
 	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
 	        		
 	        		scervelo.addLayer(30);
+	        		scervelo.addLayer(5, "sigmoid");
 	        		scervelo.addLayer(5, "sigmoid");
 	        		scervelo.addLayer(5, "sigmoid");
 	        		scervelo.addLayer(1, "sigmoid");
@@ -63,12 +56,17 @@ public class DrawingPanel extends StackPane{
 	        				diagnosis = 1;
 	        			
 	        			TrainOut.add(diagnosis);
-	        			TrainIn.add(data.get(i).getAllData());
+	        			//TrainIn.add(data.get(i).getAllData());
+	        			TrainIn.add(data.get(i).getAllNormalizedData());
+	        			
+	        			// for debugging purpose only
+	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
+	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
 	        		}
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<1000*10; ++i) {
+	        		for(int i=0; i<2000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%10==0) {

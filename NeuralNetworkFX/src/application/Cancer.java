@@ -89,39 +89,90 @@ public class Cancer {
 		this.fractal_dimension_worst = fractal_dimension_worst;
 	}
 	
+	/**
+	 * 
+	 * @return a list of all the data
+	 */
 	public List<Double> getAllData(){
 		List<Double> data = new ArrayList<Double>();
 		
-		data.add(this.getArea_mean());
-		data.add(this.getArea_se());
-		data.add(this.getArea_worst());
-		data.add(this.getCompactness_mean());
-		data.add(this.getCompactness_se());
-		data.add(this.getCompactness_worst());
-		data.add(this.getConcave_points_mean());
-		data.add(this.getConcave_points_se());
-		data.add(this.getConcave_points_worst());
-		data.add(this.getConcavity_mean());
-		data.add(this.getConcavity_se());
-		data.add(this.getConcavity_worst());
-		data.add(this.getFractal_dimension_mean());
-		data.add(this.getFractal_dimension_se());
-		data.add(this.getFractal_dimension_worst());
-		data.add(this.getPerimeter_mean());
-		data.add(this.getPerimeter_se());
-		data.add(this.getPerimeter_worst());
 		data.add(this.getRadius_mean());
-		data.add(this.getRadius_se());
-		data.add(this.getRadius_worst());
-		data.add(this.getSmoothness_mean());
-		data.add(this.getSmoothness_se());
-		data.add(this.getSmoothness_worst());
-		data.add(this.getSymmetry_mean());
-		data.add(this.getSymmetry_se());
-		data.add(this.getSymmetry_worst());
 		data.add(this.getTexture_mean());
+		data.add(this.getPerimeter_mean());
+		data.add(this.getArea_mean());
+		data.add(this.getSmoothness_mean());
+		data.add(this.getCompactness_mean());
+		data.add(this.getConcavity_mean());
+		data.add(this.getConcave_points_mean());
+		data.add(this.getSymmetry_mean());
+		data.add(this.getFractal_dimension_mean());
+		data.add(this.getRadius_se());
 		data.add(this.getTexture_se());
+		data.add(this.getPerimeter_se());
+		data.add(this.getArea_se());
+		data.add(this.getSmoothness_se());
+		data.add(this.getCompactness_se());
+		data.add(this.getConcavity_se());
+		data.add(this.getConcave_points_se());
+		data.add(this.getSymmetry_se());
+		data.add(this.getFractal_dimension_se());
+		data.add(this.getRadius_worst());
 		data.add(this.getTexture_worst());
+		data.add(this.getPerimeter_worst());
+		data.add(this.getArea_worst());
+		data.add(this.getSmoothness_worst());
+		data.add(this.getCompactness_worst());
+		data.add(this.getConcavity_worst());
+		data.add(this.getConcave_points_worst());
+		data.add(this.getSymmetry_worst());
+		data.add(this.getFractal_dimension_worst());
+		
+		return data;
+	}
+	
+	/**
+	 * 
+	 * @return a list of all normalized data
+	 */
+	public List<Double> getAllNormalizedData(){
+		List<Double> data = new ArrayList<Double>();
+		ArrayList<Double> minMax = DataReader.getminMax();
+		
+		data.add((this.getRadius_mean()-minMax.get(0))/(minMax.get(1)-minMax.get(0)));
+		data.add((this.getTexture_mean()-minMax.get(2))/(minMax.get(3)-minMax.get(2)));
+		data.add((this.getPerimeter_mean()-minMax.get(4))/(minMax.get(5)-minMax.get(4)));
+		data.add((this.getArea_mean()-minMax.get(6))/(minMax.get(7)-minMax.get(6)));
+		data.add((this.getSmoothness_mean()-minMax.get(8))/(minMax.get(9)-minMax.get(8)));
+		data.add((this.getCompactness_mean()-minMax.get(10))/(minMax.get(11)-minMax.get(10)));
+		data.add((this.getConcavity_mean()-minMax.get(12))/(minMax.get(13)-minMax.get(12)));
+		data.add((this.getConcave_points_mean()-minMax.get(14))/(minMax.get(15)-minMax.get(14)));
+		data.add((this.getSymmetry_mean()-minMax.get(16))/(minMax.get(17)-minMax.get(16)));
+		data.add((this.getFractal_dimension_mean()-minMax.get(18))/(minMax.get(19)-minMax.get(18)));
+		data.add((this.getRadius_se()-minMax.get(20))/(minMax.get(21)-minMax.get(20)));
+		data.add((this.getTexture_se()-minMax.get(22))/(minMax.get(23)-minMax.get(22)));
+		data.add((this.getPerimeter_se()-minMax.get(24))/(minMax.get(25)-minMax.get(24)));
+		data.add((this.getArea_se()-minMax.get(26))/(minMax.get(27)-minMax.get(26)));
+		data.add((this.getSmoothness_se()-minMax.get(28))/(minMax.get(29)-minMax.get(28)));
+		data.add((this.getCompactness_se()-minMax.get(30))/(minMax.get(31)-minMax.get(30)));
+		data.add((this.getConcavity_se()-minMax.get(32))/(minMax.get(33)-minMax.get(32)));
+		data.add((this.getConcave_points_se()-minMax.get(34))/(minMax.get(35)-minMax.get(34)));
+		data.add((this.getSymmetry_se()-minMax.get(36))/(minMax.get(37)-minMax.get(36)));
+		data.add((this.getFractal_dimension_se()-minMax.get(38))/(minMax.get(39)-minMax.get(38)));
+		data.add((this.getRadius_worst()-minMax.get(40))/(minMax.get(41)-minMax.get(40)));
+		data.add((this.getTexture_worst()-minMax.get(42))/(minMax.get(43)-minMax.get(42)));
+		data.add((this.getPerimeter_worst()-minMax.get(44))/(minMax.get(45)-minMax.get(44)));
+		data.add((this.getArea_worst()-minMax.get(46))/(minMax.get(47)-minMax.get(46)));
+		data.add((this.getSmoothness_worst()-minMax.get(48))/(minMax.get(49)-minMax.get(48)));
+		data.add((this.getCompactness_worst()-minMax.get(50))/(minMax.get(51)-minMax.get(50)));
+		data.add((this.getConcavity_worst()-minMax.get(52))/(minMax.get(53)-minMax.get(52)));
+		data.add((this.getConcave_points_worst()-minMax.get(54))/(minMax.get(55)-minMax.get(54)));
+		data.add((this.getSymmetry_worst()-minMax.get(56))/(minMax.get(57)-minMax.get(56)));
+		data.add((this.getFractal_dimension_worst()-minMax.get(58))/(minMax.get(59)-minMax.get(58)));
+		
+		// for debugging purpose only
+		//System.out.println("minimo 30: " + minMax.get(58));
+		//System.out.println("massimo 30: " + minMax.get(59));
+		//System.out.println("radius_mean normalized: " + data.get(0));
 		
 		return data;
 	}
