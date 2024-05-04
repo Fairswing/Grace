@@ -37,9 +37,8 @@ public class DrawingPanel extends StackPane{
 	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
 	        		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(10, "relu");
-	        		scervelo.addLayer(5, "relu");
-	        		scervelo.addLayer(5, "relu");
+	        		scervelo.addLayer(7, "relu");
+	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
@@ -110,7 +109,7 @@ public class DrawingPanel extends StackPane{
 	
 	
 	// Define offset variables
-	private int xOffset = 80;
+	private int xOffset = 150;
 	private int yOffset = 10;
 	private int yMaxNNHeight = 60;
 	public void drawNN(NeuralNetwork scervelo) {

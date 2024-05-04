@@ -25,9 +25,9 @@ public class NeuralNetwork {
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learning_rate=1e-1d;
-		this.eps=1e-2d;
-		this.momentumFactor=0.3d;
+		this.learning_rate=1d;
+		this.eps=1e-1d;
+		this.momentumFactor=0.0d;
 	}
 	
 	public int getnWeightsXNeuron() {
@@ -157,7 +157,6 @@ public class NeuralNetwork {
 	    
 	    // Backpropagation
 	    for (int i=this.layers.size()-1; i>0; --i) {
-	    //for (int i=1; i<this.layers.size(); ++i) {
 	    	for (Neuron currentNeuron : this.layers.get(i)) {
 	            // Calculating the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
 	            List<Double> curWeights = currentNeuron.getWeights();
