@@ -27,7 +27,7 @@ public class NeuralNetwork {
 		this.layers = new ArrayList<List<Neuron>>();
 		this.learning_rate=0.5d;
 		this.eps=1e-1d;
-		this.momentumFactor=0.3d;
+		this.momentumFactor=0d;
 	}
 	
 	public int getnWeightsXNeuron() {
