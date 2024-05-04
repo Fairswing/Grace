@@ -37,8 +37,8 @@ public class DrawingPanel extends StackPane{
 	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
 	        		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(3, "relu");
+	        		scervelo.addLayer(6, "relu");
+	        		scervelo.addLayer(2, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
@@ -68,7 +68,7 @@ public class DrawingPanel extends StackPane{
 	        		for(int i=0; i<5000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%10==0) {
+	        			if(i%25==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
