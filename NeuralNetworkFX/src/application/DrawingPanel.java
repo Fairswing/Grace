@@ -105,7 +105,7 @@ public class DrawingPanel extends StackPane{
 	        	        	maxError = TrainOut.get(i) - img.get(i);
 	                }
 	        		
-	        		System.out.println("\tErrore medio: " + errorSum/500);
+	        		System.out.print("\tErrore medio: " + errorSum/500);
 	        		System.out.println("\tErrore massimo: " + maxError);
 	            }
            });
