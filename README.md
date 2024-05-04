@@ -1,4 +1,4 @@
-# neuronBasicAI
+# Grace
 
 The name stands for Generic Risk Assessment and Cancer Evaluation
 
