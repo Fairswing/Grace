@@ -25,9 +25,9 @@ public class NeuralNetwork {
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learning_rate=1d;
+		this.learning_rate=0.5d;
 		this.eps=1e-1d;
-		this.momentumFactor=0.0d;
+		this.momentumFactor=0.3d;
 	}
 	
 	public int getnWeightsXNeuron() {
