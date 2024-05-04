@@ -22,7 +22,7 @@ public class RegularNeuron implements Neuron{
 
 	
 	
-	public double getBias() {
+	public Double getBias() {
 		return bias;
 	}
 
