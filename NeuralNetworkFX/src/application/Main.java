@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	 	public static double panelHeight;
 	    public static double panelWidth;
-	    boolean toTrain = false;
+	    boolean toTrain = true;
 	    DrawingPanel panel;
 
     @Override
@@ -22,7 +22,7 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
         // Set up the primary stage
-        primaryStage.setTitle("Neural Network");
+        primaryStage.setTitle("Grace");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> {
             Platform.exit();
