@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
     private static final double PANEL_HEIGHT = 1000;
     private static final double PANEL_WIDTH = 1000;
     private DrawingPanel panel;

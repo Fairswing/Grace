@@ -28,6 +28,7 @@ public class NeuralNetwork {
 		this.learning_rate=2d;
 		this.eps=1e-1d;
 		this.momentumFactor=0.0d;
+
 	}
 	
 	public int getnWeightsXNeuron() {
