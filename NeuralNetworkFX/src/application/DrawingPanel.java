@@ -37,8 +37,8 @@ public class DrawingPanel extends StackPane{
 	            	scervelo.setnWeightsXNeuron(1);
             		
 	        		scervelo.addLayer(30);
+	        		scervelo.addLayer(15, "relu");
 	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	            	
 	            	if(!toTrain && nnData.exists())
@@ -71,13 +71,13 @@ public class DrawingPanel extends StackPane{
 	        		for(int i=0; i<1000*100; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%10==0) {
-	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
+	        			if(i%100==0) {
+	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.costAverage(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
         				
 	        		}
-	        		
+	        	
 	        		
 	        		/*
 	        		 * 
@@ -111,7 +111,7 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		System.out.print("\tErrore medio: " + errorSum/500);
 	        		System.out.print(" | Errore massimo: " + maxError);
-	        		System.out.println("  \tultimo cost: " + scervelo.cost(TrainIn, TrainOut));
+	        		System.out.println("  \tultimo cost: " + scervelo.costAverage(TrainIn, TrainOut));
 	        		
 	        		if(saved)
 	        			System.out.println("\tNeural Network saved correctly");
