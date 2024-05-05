@@ -70,10 +70,10 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<2000*10; ++i) {
+	        		for(int i=0; i<1000*100; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%25==0) {
+	        			if(i%10==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
