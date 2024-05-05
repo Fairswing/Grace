@@ -26,7 +26,7 @@ public class RegularNeuron implements Neuron, Serializable{
 
 	
 	
-	public double getBias() {
+	public Double getBias() {
 		return bias;
 	}
 

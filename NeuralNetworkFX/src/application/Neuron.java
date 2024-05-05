@@ -3,7 +3,7 @@ package application;
 import java.util.List;
 
 public interface Neuron {		
-	public double getBias();
+	public Double getBias();
 
 	public void setBias(double bias);
 

@@ -24,11 +24,10 @@ public class DrawingPanel extends StackPane{
 		getChildren().add(canvas);
 		canvas.widthProperty().bind(widthProperty());
 		canvas.heightProperty().bind(heightProperty());
-		g2d = canvas.getGraphicsContext2D();	
-		pixel=15;
+		g2d = canvas.getGraphicsContext2D();
+		pixel=16;
 		imgDim=6;
-		
-		
+		g2d.setLineWidth(2.0);
 
 		thread1 = new Thread(new Runnable() {
 	            @Override
@@ -39,8 +38,7 @@ public class DrawingPanel extends StackPane{
             		
 	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(4, "relu");
-	        		scervelo.addLayer(2, "relu");
+	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	            	
 	            	if(!toTrain && nnData.exists())
@@ -139,6 +137,7 @@ public class DrawingPanel extends StackPane{
 	    	int layerYOffset=0;
 	    	int prevLayerYOffset=0;
 	        int k = 0;
+	        Color color;
 	        for (List<Neuron> layer : scervelo.getLayers()) {
 	        	int curLayer = scervelo.getLayers().indexOf(layer);
 	            int y = 0;
@@ -153,7 +152,6 @@ public class DrawingPanel extends StackPane{
 	                    y++;
 	                    continue;
 	                }else {
-	    	            
 
 	                }
 	                
@@ -162,12 +160,13 @@ public class DrawingPanel extends StackPane{
 	                // Iterate over neurons in the previous layer
 	                for (int i = 0; i < scervelo.getLayers().get(curLayer - 1).size(); i++) {
 	                    double weight = weights.get(i); // Get the weight corresponding to the connection between currentNeuron and prevNeuron
-	                    Color color = calculateColor(weight);
+	                    color = calculateColor(weight,"r");
 	                    
 	                    // Draw connection line with color based on weight
 	                    drawConnection(((k - 1) * (pixel+xOffset)+xOffset)+pixel/2, (i * (pixel*prevLayerYOffset) + yOffset+pixel*prevLayerYOffset/2)+pixel/2, (k * (pixel+xOffset)+xOffset)+pixel/2, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2)+pixel/2, color);
 	                }
-                	g2d.setFill(Color.BLACK);
+	                color = calculateColor(currentNeuron.getBias(),"g");
+                	g2d.setFill(color);
 	                g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
 	                y++;
 	            }
@@ -179,13 +178,26 @@ public class DrawingPanel extends StackPane{
 
 
 	// Helper method to calculate color based on weight
-	private Color calculateColor(double weight) {
+	private Color calculateColor(Double x, String color) {
+		if(x==null) {
+			return Color.rgb(0, 0, 0);
+		}
 	    // Map the weight to a value between 0 and 255
-	    int colorValue = (int) (Math.abs(weight) * 255);
+	    int colorValue = (int) (Math.abs(x) * 255);
 	    // Ensure the color value is within the valid range of 0 to 255
 	    colorValue = Math.min(Math.max(colorValue, 0), 255);
 	    // Use the color value for red component, and set green and blue to 0
-	    return Color.rgb(colorValue, 0, 0);
+	    switch(color) {
+	    	case "r":
+	    		return Color.rgb(colorValue, 0, 0);
+	    	case "g":
+	    		return Color.rgb(0, colorValue, 0);
+	    	case "b":
+	    		return Color.rgb(0, 0, colorValue);
+	    	default:
+	    		return Color.rgb(colorValue, 0, 0);
+	    }
+	    
 	}
 
 	// Helper method to draw connection line with specified color

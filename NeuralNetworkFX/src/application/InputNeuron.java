@@ -17,8 +17,8 @@ public class InputNeuron implements Neuron, Serializable {
 	
 	@SuppressWarnings("null")	// warning suppressed because fully unfixable
 	@Override
-	public double getBias() {
-		return  (Double) null;
+	public Double getBias() {
+		return  null;
 	}
 	@Override
 	public void setBias(double bias) {

@@ -1,51 +1,42 @@
 package application;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
 
 public class Main extends Application {
 	 	public static double panelHeight;
 	    public static double panelWidth;
 	    boolean toTrain = false;
 	    DrawingPanel panel;
-	    
-	    @Override
-	    public void start(Stage primaryStage) throws Exception {
-	    		
-	        panel = new DrawingPanel();
-	        //sliders = new Sliders();
-	        
-	        panel.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-	        primaryStage.setTitle("Grace");
-	        primaryStage.setScene(new Scene(panel, panelWidth, panelHeight));
-	        
-	        primaryStage.show();
-	        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-	            @Override
-	            public void handle(WindowEvent t) {
-	                Platform.exit();
-	                System.exit(0);
-	
-	            
-	            
-	            
-	            }
-	        });
-	        
-	        panel.start(toTrain);
-	    }
 
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        panel = new DrawingPanel();
 
-	
-	public static void main(String[] args) {
-		panelHeight=1000;
-		panelWidth=1000;
-		launch(args);		
-	}
+        // Set up the scene
+        Scene scene = new Scene(panel, panelWidth, panelHeight);
+        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+        // Set up the primary stage
+        primaryStage.setTitle("Neural Network");
+        primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        // Show the primary stage
+        primaryStage.show();
+
+        // Start the drawing panel
+        panel.start(true);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
