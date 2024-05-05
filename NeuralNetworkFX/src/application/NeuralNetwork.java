@@ -36,8 +36,8 @@ public class NeuralNetwork implements Serializable{
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
 		this.learning_rate=5e-1d;
-		this.eps=1e-1d;
-		this.momentumFactor=0.2d;
+		this.eps=1.5e-1d;
+		this.momentumFactor=0.6d;
 	}
 	
 	public int getnWeightsXNeuron() {
