@@ -27,16 +27,14 @@ public class NeuralNetwork implements Serializable{
 	private static final long serialVersionUID = 972856922459233840L;
 	
 	private List<List<Neuron>> layers;
-	private double learning_rate;
-	private double eps;
+	private double learningRate;
 	private int nWeightsXNeuron;
 	private double momentumFactor;// Rapresents how much of the momentum is retained
 
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learning_rate=2d;
-		this.eps=1e-1d;
+		this.learningRate=1e-1d;
 		this.momentumFactor=0.0d;
 
 	}
@@ -49,19 +47,11 @@ public class NeuralNetwork implements Serializable{
 		this.nWeightsXNeuron = nWeightsXNeuron;
 	}
 	public double getLearning_rate() {
-		return learning_rate;
+		return learningRate;
 	}
 
-	public void setLearning_rate(double learning_rate) {
-		this.learning_rate = learning_rate;
-	}
-	
-	public double getEps() {
-		return eps;
-	}
-
-	public void setEps(double eps) {
-		this.eps = eps;
+	public void setLearning_rate(double learningRate) {
+		this.learningRate = learningRate;
 	}
 	
 	public List<List<Neuron>> getLayers() {
@@ -129,75 +119,97 @@ public class NeuralNetwork implements Serializable{
 	    return currentInputs; // Return the output of the last layer
 	}
 	
-	// Calculate the average of the differences between the expected outputs and the actual output using the MSE cost function formula.
-	public double cost(List<List<Double>> trainingData, List<Double> outTrainingData) {
+	// Calculate the average of the cost of each training example.
+	public double costAverage(List<List<Double>> trainingData, List<Double> outTrainingData) {
 	    double result = 0.0d;
-	    double errorPow = 0.0d;
 	    int trainCount = trainingData.size();
 	    for (int i = 0; i < trainCount; ++i) {
 	    	List<Double> output = forward(trainingData.get(i));
-	        for (int j = 0; j < output.size(); ++j) {
-	            double error = output.get(j) - outTrainingData.get(i);
-	            errorPow = error * error;
-	            result += errorPow;
-	        }
+	    	result+=cost(output.get(0), outTrainingData.get(i));
         }
-	    result /= (2*trainCount);
+	    result /= (trainingData.size());
 	    return result;
 	}
 	
-	/*
-	 * 
-	 * 
-	 * To visualize things let's imagine the cost funciton as a graph.
-	 * Cost(x) is a single point in the graph, cost(x+eps) is a point really close to cost(x).
-	 * So the finite difference draws a line between the two points and returns 
-	 * the line's slope effectively approximating the derivative  of the cost function.
-	 * so the smaller the eps, the more accurate this approximation will be.
-	 * Using doubleing point variables we are limited to a minimum eps value, 
-	 * due to the limitations of doubles.
-	 * 
-	 */
-	private double prevVt=0d;
-	private double vt = 0d;
-	private double savedWeight;
-	private double finiteDiff;
-	private double savedBias;
-	public void train(List<List<Double>> trainingData, List<Double> outTrainingData) {
-	    // Forward pass.
-	    double c = cost(trainingData,outTrainingData);// Save the cost funcion's result before changing the weights by eps.
-	    
-	    // Backpropagation
-	    for (int i=this.layers.size()-1; i>0; --i) {
+	// cost function is used to calculate the difference between the output and the expected output.
+	// The result is squared to penalize larger errors.
+	// MSE
+	public double cost(double output, double expectedOutput) {
+		double error=0d;
+			error = output - expectedOutput;
+			error*=error;
+        return error;
+	}
+	// cost derivative
+	public double costDerivative(Double output, Double expectedOutput) {
+		double error=0d;
+			error = output - expectedOutput;
+			error*=2;
+        return error;
+	}
+	
+	// Back propagation algorithm
+	// to be finished!!!
+	// i think gradients of one layer should be multiplyied by the gradients of the next one.
+	// it will probably be necesary to keep track of every calculated gradient instead of adding them to the same variable.
+	// check how the chain rule works.
+	// Stochastic gradient descent could be implemented when these problems are sorted to improve performance.
+	public void backPropagation(double expectedOutput) {
+		double cOnAl=0d;
+		double alOnZl=0d;
+		double zlOnWl=0d;
+		final double zlOnBl=1d;
+		double weightGradient=0d;
+		double biasGradient=0d;
+		Neuron prevNeuron;
+		
+    	for (int i=this.layers.size()-1; i>0; --i) {
 	    	for (Neuron currentNeuron : this.layers.get(i)) {
-	            List<Double> curWeights = currentNeuron.getWeights();
-	            double output = currentNeuron.getOutput(); // get the output of the neuron
-	            double AFDerivative = currentNeuron.AFDerivative(output); // Calculate the derivative of the activation function
-	            
-	            // Calculate the approximation of the derivative of the "cost" function with respect to the weight of every neuron. then modify the neuron's weights accordingly.
-	            for(int j=0;j<curWeights.size(); ++j) {
-	                savedWeight = curWeights.get(j);
-	                curWeights.set(j, savedWeight+eps);
-	                finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps); // Calculate the finite difference of the cost function.
-	                finiteDiff*= AFDerivative; // Multiply the finite difference by the derivative of the activation function
-	                // Calculate velocity, and applying momentum
-	                prevVt = vt;
-	                vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
-	                curWeights.set(j, savedWeight-vt);
+	            List<Double> curNeuronWeights = currentNeuron.getWeights();
+	            for(int j=0;j<curNeuronWeights.size(); ++j) {
+	    			cOnAl = costDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput);
+	    			alOnZl = currentNeuron.AFDerivative(currentNeuron.getOutput());
+	    			prevNeuron = this.layers.get(i-1).get(j);
+	    			zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
+	    			weightGradient=cOnAl*alOnZl*zlOnWl;
+	    			currentNeuron.getWeightsGradient().set(j, currentNeuron.getWeightsGradient().get(j)+weightGradient);
+	    		}
+	            biasGradient = cOnAl*alOnZl*zlOnBl;
+	            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
+	    	}
+    	}
+        
+	}
+	
+	private void updateWeightsAndBiases(int trainCount) {
+	    // Update weights and biases
+	    for (int i = 1; i < this.layers.size(); ++i) {
+	        for (Neuron currentNeuron : this.layers.get(i)) {
+	            List<Double> curNeuronWeights = currentNeuron.getWeights();
+	            List<Double> curNeuronWeightsGradients = currentNeuron.getWeightsGradient();
+	            for (int j = 0; j < curNeuronWeights.size(); ++j) {
+	                curNeuronWeightsGradients.set(j, curNeuronWeightsGradients.get(j) / trainCount);
+	                curNeuronWeights.set(j, curNeuronWeights.get(j) - (curNeuronWeightsGradients.get(j) * learningRate));
 	            }
-	            // Doing the same for the bias of each neuron.
-	            savedBias =currentNeuron.getBias();
-	            currentNeuron.setBias(currentNeuron.getBias()+eps);
-	            finiteDiff = ((cost(trainingData,outTrainingData)-c)/eps) * AFDerivative; // Multiply the finite difference by the derivative of the activation function
-	            currentNeuron.setBias(savedBias);
-	            // Calculate velocity, and applying momentum
-	            prevVt = vt;
-	            vt = (momentumFactor * prevVt) + (learning_rate * finiteDiff);
-	            currentNeuron.setBias(currentNeuron.getBias() - vt);
-	            
+	            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient() / trainCount);
+	            currentNeuron.setBias(currentNeuron.getBias() - (currentNeuron.getBiasGradient() * learningRate));
 	        }
 	    }
 	}
+	
+	public void train(List<List<Double>> trainingData, List<Double> outTrainingData) {
+		int trainCount=trainingData.size();
+		// Loop over training examples
+	    for (int i = 0; i < trainCount; ++i) {
+	        // Forward pass
+	        forward(trainingData.get(i));
+	        // Backword pass
+	        backPropagation(outTrainingData.get(i));
+	    }
+	    // Update weights and biases
+	    updateWeightsAndBiases(trainCount);
+	}
+	
 	
 	public boolean saveState() {
 		boolean saved = false;

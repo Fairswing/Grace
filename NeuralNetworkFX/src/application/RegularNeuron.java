@@ -10,20 +10,25 @@ public class RegularNeuron implements Neuron, Serializable{
 	
 	private List<Double> weights;
 	private double bias;
+	private List<Double> weightsGradient;
+	private double biasGradient;
 	private double output;
 	private String activationFunction;
+
 	
 	public RegularNeuron(int nWeights, String activationFunction) {
 		super();
 		this.weights = new ArrayList<Double>();
+		this.weightsGradient = new ArrayList<Double>();
 		for(int i=0;i<nWeights; ++i) {
 			Random rand = new Random();
 			this.weights.add((double)rand.nextGaussian() * Math.sqrt(2.0 / nWeights));// randomize the initial value of the weight
+			this.weightsGradient.add(0d);
 		}
 		this.bias = (double)Math.random(); // should be randomly initialized like weights
+		this.biasGradient = 0d; 
 		this.activationFunction=activationFunction;
 	}
-
 	
 	
 	public Double getBias() {
@@ -46,6 +51,24 @@ public class RegularNeuron implements Neuron, Serializable{
 		this.weights = weights;
 	}
 	
+	public double getBiasGradient() {
+		return biasGradient;
+	}
+
+	public void setBiasGradient(double biasGradient) {
+		this.biasGradient = biasGradient;
+	}
+
+	public void setOutput(double output) {
+		this.output = output;
+	}
+
+	@Override
+	public double getOutput() {
+		return this.output;
+	}
+	
+	
 	//generalized version of the calculate function
 	public double calculate(List<Double> inputs) {
 		//System.out.println("Input.size(): " + inputs.size());
@@ -58,6 +81,7 @@ public class RegularNeuron implements Neuron, Serializable{
 			 result+= inputs.get(i) * this.weights.get(i);
 		}
 		result += this.bias;
+		this.output=result;
 		return activate(result);
 	}
 	
@@ -103,17 +127,9 @@ public class RegularNeuron implements Neuron, Serializable{
         return x > 0 ? 1 : 0;
 	}
 
-
-
-	public void setOutput(double output) {
-		this.output = output;
-	}
-
-
-
 	@Override
-	public double getOutput() {
-		// TODO Auto-generated method stub
-		return this.output;
+	public List<Double> getWeightsGradient() {
+		return this.weightsGradient;
 	}
+
 }

@@ -35,7 +35,7 @@ public class InputNeuron implements Neuron, Serializable {
 	@Override
 	public void setWeights(List<Double> weights) {
 	}
-	
+
 	//generalized version of the calculate function
 	@Override
 	public double calculate(List<Double> inputs) {
@@ -67,6 +67,26 @@ public class InputNeuron implements Neuron, Serializable {
 	public double getOutput() {
 		// TODO Auto-generated method stub
 		return this.output;
+	}
+
+	@Override
+	public double getBiasGradient() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void setBiasGradient(double biasGradient) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<Double> getWeightsGradient() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
