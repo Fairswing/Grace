@@ -70,7 +70,7 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<1000*10; ++i) {
+	        		for(int i=0; i<2000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%25==0) {
@@ -112,7 +112,8 @@ public class DrawingPanel extends StackPane{
 	                }
 	        		
 	        		System.out.print("\tErrore medio: " + errorSum/500);
-	        		System.out.println("\tErrore massimo: " + maxError);
+	        		System.out.print(" | Errore massimo: " + maxError);
+	        		System.out.println("  \tultimo cost: " + scervelo.cost(TrainIn, TrainOut));
 	        		
 	        		if(saved)
 	        			System.out.println("\tNeural Network saved correctly");
