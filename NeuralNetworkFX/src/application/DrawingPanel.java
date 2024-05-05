@@ -16,14 +16,15 @@ public class DrawingPanel extends StackPane{
 	private Thread thread1;
 	private static int pixel;// pixel dimension
 	private static int imgDim; // image dimension
+	boolean toTrain = false;
 	
 	public DrawingPanel() throws IOException {
 		canvas = new Canvas();
+		
 		getChildren().add(canvas);
 		canvas.widthProperty().bind(widthProperty());
 		canvas.heightProperty().bind(heightProperty());
-		g2d = canvas.getGraphicsContext2D();
-		
+		g2d = canvas.getGraphicsContext2D();	
 		pixel=15;
 		imgDim=6;
 		
@@ -34,18 +35,16 @@ public class DrawingPanel extends StackPane{
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	            	File nnData = new File("savedNN.dat");
+	            	scervelo.setnWeightsXNeuron(1);
+            		
+	        		scervelo.addLayer(30);
+	        		scervelo.addLayer(7, "relu");
+	        		scervelo.addLayer(4, "relu");
+	        		scervelo.addLayer(2, "relu");
+	        		scervelo.addLayer(1, "sigmoid");
 	            	
-	            	if(!nnData.exists()) {
-	            		scervelo.setnWeightsXNeuron(1);
-	            		
-		        		scervelo.addLayer(30);
-		        		scervelo.addLayer(7, "relu");
-		        		scervelo.addLayer(4, "relu");
-		        		scervelo.addLayer(2, "relu");
-		        		scervelo.addLayer(1, "sigmoid");
-	            	} else {
+	            	if(!toTrain && nnData.exists())
 	            		scervelo = NeuralNetwork.loadState();
-	            	}	
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
@@ -71,7 +70,7 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<5000*1; ++i) {
+	        		for(int i=0; i<1000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%25==0) {
@@ -123,7 +122,8 @@ public class DrawingPanel extends StackPane{
            });
 	}
 	 
-	public void start() {
+	public void start(boolean toTrain) {
+		this.toTrain = toTrain;
 		thread1.start();
 	}
 	

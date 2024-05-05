@@ -11,6 +11,7 @@ import javafx.stage.WindowEvent;
 public class Main extends Application {
 	 	public static double panelHeight;
 	    public static double panelWidth;
+	    boolean toTrain = true;
 	    DrawingPanel panel;
 	    
 	    @Override
@@ -37,7 +38,7 @@ public class Main extends Application {
 	            }
 	        });
 	        
-	        panel.start();
+	        panel.start(toTrain);
 	    }
 
 
