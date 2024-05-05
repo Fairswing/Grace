@@ -11,11 +11,21 @@
 // TO DO!!! not finished
 
 package application;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable{
+
+	private static final long serialVersionUID = 972856922459233840L;
+	
 	private List<List<Neuron>> layers;
 	private double learning_rate;
 	private double eps;
@@ -187,6 +197,59 @@ public class NeuralNetwork {
 	            
 	        }
 	    }
+	}
+	
+	public boolean saveState() {
+		boolean saved = false;
+		
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("savedNN.dat"));
+			
+			// writing the object to savedNN.dat and the closing the oos
+			oos.writeObject(this);
+			oos.close();
+			
+			// setting the saved value to true
+			saved = true;
+			
+			// printing the completion of the save
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.toString());
+		}
+		
+		return saved;
+	}
+	
+	public static NeuralNetwork loadState(){
+		
+		NeuralNetwork loadedNN = null;
+		
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("savedNN.dat"));
+				
+			loadedNN = (NeuralNetwork) ois.readObject();	// reading the serialize NN
+			
+			ois.close();	// closing the input stream
+					
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		
+		return loadedNN;
 	}
 
 }

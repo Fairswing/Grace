@@ -1,9 +1,13 @@
 package application;
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RegularNeuron implements Neuron{
+public class RegularNeuron implements Neuron, Serializable{
+	
+	private static final long serialVersionUID = -6524856887066826088L;
+	
 	private List<Double> weights;
 	private double bias;
 	private double output;

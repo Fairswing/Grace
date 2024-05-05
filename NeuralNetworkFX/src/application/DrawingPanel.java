@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,11 @@ public class DrawingPanel extends StackPane{
 	private Thread thread1;
 	private static int pixel;// pixel dimension
 	private static int imgDim; // image dimension
+	boolean toTrain = false;
 	
 	public DrawingPanel() throws IOException {
 		canvas = new Canvas();
+		
 		getChildren().add(canvas);
 		canvas.widthProperty().bind(widthProperty());
 		canvas.heightProperty().bind(heightProperty());
@@ -30,18 +33,23 @@ public class DrawingPanel extends StackPane{
 	            @Override
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
-	        		scervelo.setnWeightsXNeuron(1);
-	        			        		
+	            	File nnData = new File("savedNN.dat");
+	            	scervelo.setnWeightsXNeuron(1);
+            		
 	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "relu");
 	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
+	            	
+	            	if(!toTrain && nnData.exists())
+	            		scervelo = NeuralNetwork.loadState();
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
 	        		ArrayList<List<Double>> TrainIn = new ArrayList<List<Double>>();
 	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
 	        		
+	        		// setting up all the training data for the nn to use
 	        		for(int i = 0; i < data.size(); i++) {
 	        			double diagnosis;
 	        			
@@ -60,16 +68,15 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<1000*1; ++i) {
+	        		for(int i=0; i<1000*100; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%25==0) {
+	        			if(i%10==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.cost(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
         				
 	        		}
-	        		
 	        		
 	        		
 	        		/*
@@ -84,6 +91,8 @@ public class DrawingPanel extends StackPane{
         		    	List<Double> output = scervelo.forward(TrainIn.get(y));
         		    	img.add(output.get(0));
         	        }
+        			
+        			boolean saved = scervelo.saveState();
 	        		
         			double errorSum = 0;
         			double maxError = TrainOut.get(0) - img.get(0);
@@ -101,12 +110,19 @@ public class DrawingPanel extends StackPane{
 	                }
 	        		
 	        		System.out.print("\tErrore medio: " + errorSum/500);
-	        		System.out.println("\tErrore massimo: " + maxError);
+	        		System.out.print(" | Errore massimo: " + maxError);
+	        		System.out.println("  \tultimo cost: " + scervelo.cost(TrainIn, TrainOut));
+	        		
+	        		if(saved)
+	        			System.out.println("\tNeural Network saved correctly");
+	        		else
+	        			System.out.println("\tErrors saving the Neural Network");
 	            }
            });
 	}
 	 
-	public void start() {
+	public void start(boolean toTrain) {
+		this.toTrain = toTrain;
 		thread1.start();
 	}
 	
