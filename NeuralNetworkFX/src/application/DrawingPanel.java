@@ -41,8 +41,13 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	            	
-	            	if(!toTrain && nnData.exists())
+	            	if(!toTrain && nnData.exists()) {
+	            		
 	            		scervelo = NeuralNetwork.loadState();
+	            		
+	            		// for debugging purpose only
+	            		System.out.println("Saved state nn loaded correctly");
+	            	}
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;

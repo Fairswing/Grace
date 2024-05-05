@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	 	public static double panelHeight;
 	    public static double panelWidth;
-	    boolean toTrain = true;
+	    boolean toTrain = false;
 	    DrawingPanel panel;
 
     @Override
@@ -33,7 +33,7 @@ public class Main extends Application {
         primaryStage.show();
 
         // Start the drawing panel
-        panel.start(true);
+        panel.start(toTrain);
     }
 
     public static void main(String[] args) {
