@@ -22,24 +22,19 @@ public class DrawingPanel extends StackPane{
 		canvas.widthProperty().bind(widthProperty());
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
-		
-		pixel=15;
+		pixel=16;
 		imgDim=6;
-		
-		
+		g2d.setLineWidth(2.0);
 
 		thread1 = new Thread(new Runnable() {
 	            @Override
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	        		scervelo.setnWeightsXNeuron(1);
-	        		
-	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
-	        		
+	        			        		
 	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(4, "relu");
-	        		scervelo.addLayer(2, "relu");
+	        		scervelo.addLayer(3, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
 	        		
@@ -127,8 +122,7 @@ public class DrawingPanel extends StackPane{
 	            for (Neuron currentNeuron : layer) {
 	                // Skip drawing connections for the input layer
 	                if (curLayer == 0) {
-	                	color = calculateColor(currentNeuron.getBias(),"g");
-	                	g2d.setFill(color);
+	                	g2d.setFill(Color.BLACK);
 	                    g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
 	                    y++;
 	                    continue;
