@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	 	public static double panelHeight;
-	    public static double panelWidth;
+	 	public static double panelHeight=1000;
+	    public static double panelWidth=1000;
 	    boolean toTrain = false;
 	    DrawingPanel panel;
 
@@ -28,7 +28,7 @@ public class Main extends Application {
             Platform.exit();
             System.exit(0);
         });
-
+        
         // Show the primary stage
         primaryStage.show();
 
