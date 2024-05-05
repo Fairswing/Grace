@@ -1,8 +1,10 @@
 package application;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputNeuron implements Neuron {
+public class InputNeuron implements Neuron, Serializable {
+	private static final long serialVersionUID = 2662866372940198955L;
 	private List<Double> weights; // Only used to take in input
 	private double output;
 

@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +33,26 @@ public class DrawingPanel extends StackPane{
 	            @Override
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
-	        		scervelo.setnWeightsXNeuron(1);
-	        		
-	        		// sembra funzionare decentemente solo con la sigmoid, con la relu smebra peggiorare, probabilmente sarebbero da normalizzare gli input.
-	        		
-	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(7, "relu");
-	        		scervelo.addLayer(4, "relu");
-	        		scervelo.addLayer(2, "relu");
-	        		scervelo.addLayer(1, "sigmoid");
+	            	File nnData = new File("savedNN.dat");
+	            	
+	            	if(!nnData.exists()) {
+	            		scervelo.setnWeightsXNeuron(1);
+	            		
+		        		scervelo.addLayer(30);
+		        		scervelo.addLayer(7, "relu");
+		        		scervelo.addLayer(4, "relu");
+		        		scervelo.addLayer(2, "relu");
+		        		scervelo.addLayer(1, "sigmoid");
+	            	} else {
+	            		scervelo = NeuralNetwork.loadState();
+	            	}	
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
 	        		ArrayList<List<Double>> TrainIn = new ArrayList<List<Double>>();
 	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
 	        		
+	        		// setting up all the training data for the nn to use
 	        		for(int i = 0; i < data.size(); i++) {
 	        			double diagnosis;
 	        			
@@ -65,7 +71,7 @@ public class DrawingPanel extends StackPane{
 	        		
 
 	                drawBackground();
-	        		for(int i=0; i<1000*1; ++i) {
+	        		for(int i=0; i<5000*1; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%25==0) {
@@ -74,7 +80,6 @@ public class DrawingPanel extends StackPane{
 	        			drawNN(scervelo);
         				
 	        		}
-	        		
 	        		
 	        		
 	        		/*
@@ -89,6 +94,8 @@ public class DrawingPanel extends StackPane{
         		    	List<Double> output = scervelo.forward(TrainIn.get(y));
         		    	img.add(output.get(0));
         	        }
+        			
+        			boolean saved = scervelo.saveState();
 	        		
         			double errorSum = 0;
         			double maxError = TrainOut.get(0) - img.get(0);
@@ -107,6 +114,11 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		System.out.print("\tErrore medio: " + errorSum/500);
 	        		System.out.println("\tErrore massimo: " + maxError);
+	        		
+	        		if(saved)
+	        			System.out.println("\tNeural Network saved correctly");
+	        		else
+	        			System.out.println("\tErrors saving the Neural Network");
 	            }
            });
 	}
