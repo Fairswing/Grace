@@ -90,6 +90,20 @@ public class InputNeuron implements Neuron, Serializable {
 	}
 
 
+	@Override
+	public double getDelta() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void setDelta(double delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 
 }

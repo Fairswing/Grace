@@ -37,8 +37,8 @@ public class DrawingPanel extends StackPane{
 	            	scervelo.setnWeightsXNeuron(1);
             		
 	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(15, "relu");
-	        		scervelo.addLayer(7, "relu");
+	        		scervelo.addLayer(7, "sigmoid");
+	        		scervelo.addLayer(3, "sigmoid");
 	        		scervelo.addLayer(1, "sigmoid");
 	            	
 	            	if(!toTrain && nnData.exists())

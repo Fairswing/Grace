@@ -26,6 +26,8 @@ public interface Neuron {
 	public double getBiasGradient();
 	public void setBiasGradient(double biasGradient);
 	public List<Double> getWeightsGradient();
+	public double getDelta();
+	public void setDelta(double delta);
 
 	
 }

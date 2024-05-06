@@ -22,7 +22,7 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
         // Set up the primary stage
-        primaryStage.setTitle("Neural Network");
+        primaryStage.setTitle("Grace");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> {
             Platform.exit();

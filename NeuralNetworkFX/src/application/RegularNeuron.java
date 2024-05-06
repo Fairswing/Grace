@@ -14,6 +14,7 @@ public class RegularNeuron implements Neuron, Serializable{
 	private double biasGradient;
 	private double output;
 	private String activationFunction;
+	private double delta;
 
 	
 	public RegularNeuron(int nWeights, String activationFunction) {
@@ -30,7 +31,7 @@ public class RegularNeuron implements Neuron, Serializable{
 		this.activationFunction=activationFunction;
 	}
 	
-	
+
 	public Double getBias() {
 		return bias;
 	}
@@ -130,6 +131,18 @@ public class RegularNeuron implements Neuron, Serializable{
 	@Override
 	public List<Double> getWeightsGradient() {
 		return this.weightsGradient;
+	}
+
+	@Override
+	public double getDelta() {
+		// TODO Auto-generated method stub
+		return delta;
+	}
+
+	@Override
+	public void setDelta(double delta) {
+		// TODO Auto-generated method stub
+		this.delta = delta;
 	}
 
 }

@@ -29,13 +29,13 @@ public class NeuralNetwork implements Serializable{
 	private List<List<Neuron>> layers;
 	private double learningRate;
 	private int nWeightsXNeuron;
-	private double momentumFactor;// Rapresents how much of the momentum is retained
+	//private double momentumFactor;// Rapresents how much of the momentum is retained
 
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learningRate=1e-1d;
-		this.momentumFactor=0.0d;
+		this.learningRate=1d;
+//		this.momentumFactor=0.0d;
 
 	}
 	
@@ -136,45 +136,81 @@ public class NeuralNetwork implements Serializable{
 	// MSE
 	public double cost(double output, double expectedOutput) {
 		double error=0d;
-			error = output - expectedOutput;
-			error*=error;
-        return error;
+			error = (output - expectedOutput);
+			error = Math.pow(error, 2);
+        return error/2;
 	}
 	// cost derivative
 	public double costDerivative(Double output, Double expectedOutput) {
 		double error=0d;
 			error = output - expectedOutput;
-			error*=2;
         return error;
 	}
 	
-	// Back propagation algorithm
+	/* Back propagation algorithm
 	// to be finished!!!
 	// i think gradients of one layer should be multiplyied by the gradients of the next one.
 	// it will probably be necesary to keep track of every calculated gradient instead of adding them to the same variable.
 	// check how the chain rule works.
-	// Stochastic gradient descent could be implemented when these problems are sorted to improve performance.
+	// Stochastic gradient descent could be implemented when these problems are sorted to improve performance.*/
 	public void backPropagation(double expectedOutput) {
-		double cOnAl=0d;
-		double alOnZl=0d;
-		double zlOnWl=0d;
-		final double zlOnBl=1d;
+		double cOnAl=0d;	// 2(aL-y) how much the activation of the current neuron and layer influence Cost
+		double alOnZl=0d;	// activationF'(output(L)) derivative of the activation function of the current neuron and layer
+		double zlOnWl=0d;	// a(L-1) how much Zl changes based on the change of weight
+		final double zlOnBl=1d;	// how much zl changed base on the bias
 		double weightGradient=0d;
 		double biasGradient=0d;
 		Neuron prevNeuron;
 		
-    	for (int i=this.layers.size()-1; i>0; --i) {
-	    	for (Neuron currentNeuron : this.layers.get(i)) {
-	            List<Double> curNeuronWeights = currentNeuron.getWeights();
+		// saving the gradients of the last layer
+		for (Neuron currentNeuron : this.layers.get(layers.size()-1)) {	// iterating trough the neurons of the current layer
+            List<Double> curNeuronWeights = currentNeuron.getWeights();	// getting the current neuron weights
+            cOnAl = costDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput);
+			alOnZl = currentNeuron.AFDerivative(currentNeuron.getOutput());
+            currentNeuron.setDelta(cOnAl*alOnZl);	// optimizing function calculating delta one time for every neuron weight
+            for(int j=0;j<curNeuronWeights.size(); ++j) {
+    			for(int k = 0; k < this.layers.get(layers.size()-2).size(); k++) {
+    				prevNeuron = this.layers.get(layers.size()-2).get(k);
+    				zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
+    				
+    				// multiplying the current neuron delta by the activated output of the neuron of the previous layer
+    				weightGradient += currentNeuron.getDelta() * zlOnWl;
+    			}
+    			currentNeuron.getWeightsGradient().set(j, currentNeuron.getWeightsGradient().get(j)+weightGradient);
+    		}
+            biasGradient = currentNeuron.getDelta();
+            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
+    	}
+		
+		// iterating trough the others layers
+    	for (int i=this.layers.size()-2; i>0; --i) {	// moving trough all the layers from the last one to the first one
+	    	for (Neuron currentNeuron : this.layers.get(i)) {	// iterating trough the neurons of the current layer
+	    		weightGradient = 0d;
+	            List<Double> curNeuronWeights = currentNeuron.getWeights();	// getting the current neuron weights
+	            double delta = 0;
 	            for(int j=0;j<curNeuronWeights.size(); ++j) {
-	    			cOnAl = costDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput);
-	    			alOnZl = currentNeuron.AFDerivative(currentNeuron.getOutput());
-	    			prevNeuron = this.layers.get(i-1).get(j);
-	    			zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
-	    			weightGradient=cOnAl*alOnZl*zlOnWl;
+	    			
+	    			// calculating delta for each neuron in the next layer
+	    			for(int k = 0; k < this.layers.get(i+1).size(); k++) {
+	    				double prevNeuronDelta = this.layers.get(i+1).get(k).getDelta();
+	    				double prevNeuronWeight = this.layers.get(i+1).get(k).getWeight(this.layers.get(i).indexOf(currentNeuron));
+	    				double sigmoidDerivative = currentNeuron.AFDerivative(currentNeuron.getOutput());
+	    				delta += prevNeuronDelta * prevNeuronWeight * sigmoidDerivative;
+	    			}	
+	    			currentNeuron.setDelta(delta);	// saving the delta of the current neuron
+	    			
+	    			// calculating the gradient for the current neuron considering the activated output of each neuron 
+	    			//	of the previous layer
+	    			for(int k = 0; k < this.layers.get(i-1).size(); k++) {
+	    				prevNeuron = this.layers.get(i-1).get(k);
+		    			zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
+	    				
+	    				// multiplying the current neuron delta by the activated output of the neuron of the previous layer
+	    				weightGradient += currentNeuron.getDelta() * zlOnWl;
+	    			}
 	    			currentNeuron.getWeightsGradient().set(j, currentNeuron.getWeightsGradient().get(j)+weightGradient);
 	    		}
-	            biasGradient = cOnAl*alOnZl*zlOnBl;
+	            biasGradient = currentNeuron.getDelta();
 	            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
 	    	}
     	}
