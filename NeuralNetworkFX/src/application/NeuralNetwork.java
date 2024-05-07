@@ -34,7 +34,7 @@ public class NeuralNetwork implements Serializable{
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learningRate=1d;
+		this.learningRate=1e-5d;
 //		this.momentumFactor=0.0d;
 
 	}
@@ -157,7 +157,7 @@ public class NeuralNetwork implements Serializable{
 		double cOnAl=0d;	// 2(aL-y) how much the activation of the current neuron and layer influence Cost
 		double alOnZl=0d;	// activationF'(output(L)) derivative of the activation function of the current neuron and layer
 		double zlOnWl=0d;	// a(L-1) how much Zl changes based on the change of weight
-		final double zlOnBl=1d;	// how much zl changed base on the bias
+		// double zlOnBl=1d;	// how much zl changed base on the bias
 		double weightGradient=0d;
 		double biasGradient=0d;
 		Neuron prevNeuron;
@@ -244,6 +244,15 @@ public class NeuralNetwork implements Serializable{
 	    }
 	    // Update weights and biases
 	    updateWeightsAndBiases(trainCount);
+	    
+	    for(int i = 1; i < this.layers.size(); i++) {
+	    	for(Neuron currentNeuron : this.layers.get(i)) {
+	    		for(int j = 0; j < currentNeuron.getWeightsGradient().size(); j++) {
+	    			currentNeuron.getWeightsGradient().set(j, 0d);
+	    			currentNeuron.setBiasGradient(0d);
+	    		}
+	    	}
+	    }
 	}
 	
 	

@@ -38,6 +38,7 @@ public class DrawingPanel extends StackPane{
             		
 	        		scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "sigmoid");
+	        		scervelo.addLayer(5, "sigmoid");
 	        		scervelo.addLayer(3, "sigmoid");
 	        		scervelo.addLayer(1, "sigmoid");
 	            	

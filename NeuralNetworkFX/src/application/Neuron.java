@@ -29,5 +29,6 @@ public interface Neuron {
 	public double getDelta();
 	public void setDelta(double delta);
 
+
 	
 }
