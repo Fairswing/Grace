@@ -125,7 +125,7 @@ public class DrawingPanel extends StackPane{
 	        		
 	        		System.out.print("\tErrore medio: " + errorSum/500);
 	        		System.out.print(" | Errore massimo: " + maxError);
-	        		System.out.println("  \tultimo cost: " + scervelo.costAverage(TrainIn, TrainOut));
+	        		System.out.println("  \tultimo cost: " + scervelo.lossAverage(TrainIn, TrainOut));
 	        		
 	        		if(saved)
 	        			System.out.println("\tNeural Network saved correctly");

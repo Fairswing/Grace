@@ -96,9 +96,20 @@ public class InputNeuron implements Neuron, Serializable {
 		return 0;
 	}
 
+	@Override
+	public double getWeightGradient(int i){
+		return 0d;
+	}
 
 	@Override
 	public void setDelta(double delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setWeightGradient(int k, double d) {
 		// TODO Auto-generated method stub
 		
 	}

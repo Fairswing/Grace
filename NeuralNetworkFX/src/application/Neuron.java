@@ -28,6 +28,8 @@ public interface Neuron {
 	public List<Double> getWeightsGradient();
 	public double getDelta();
 	public void setDelta(double delta);
+	public void setWeightGradient(int k, double d);
+	public double getWeightGradient(int i);
 
 
 	

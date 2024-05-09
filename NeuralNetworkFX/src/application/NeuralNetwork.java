@@ -161,9 +161,9 @@ public class NeuralNetwork implements Serializable{
 	 * @param x the point in x in the function loss
 	 * @return the derivative of the loss(x)
 	 */
-	public double lossDerivative(double weight) {
+	public double lossDerivative(double x) {
 		double error=0d;
-			error = 2*weight;
+			error = 2*x;
         return error;
 	}
 	
@@ -173,8 +173,57 @@ public class NeuralNetwork implements Serializable{
 	 * @param expectedOutput the output that we expect from the neural network
 	 */
 	public void backPropagation(double expectedOutput) {
-		
-        
+		ArrayList<List<Double>> nextLayersInGradient = new ArrayList<List<Double>>();	// considering the next layer gradient of the input
+		for(int i = this.getLayers().size() - 1; i>0; ++i) {
+			ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// considering the next layer gradient of the input
+
+			List<Neuron> previousLayerNeurons = this.getLayers().get(i-1); // we save the neurons of the previous layer
+			int neuronNumber = this.getLayers().get(i).size();	// the number of neurons preset in the layer
+			
+			// just for the output layer
+			if(i == this.getLayers().size()-1) {	
+				for(int j = 0; j<neuronNumber;++j) {
+					Neuron currentNeuron=this.getLayers().get(i).get(j);
+					double dLossOnActivation = lossDerivative(currentNeuron.activate(currentNeuron.getOutput())); 	// derivative of loss with activation as input.
+					double dActivationOnOutput = currentNeuron.AFDerivative(currentNeuron.getOutput());	// derivative of the activation function with the non activated output as input
+					double delta = dLossOnActivation*dActivationOnOutput;	// chain rule on the partial derivatives calculated up to now. Delta is the same for every weight of a given neuron.
+					nextLayersInGradient.add(new ArrayList<Double>(currentNeuron.getWeights().size()));
+					for(int k = 0; k < currentNeuron.getWeights().size(); k++){
+						Neuron previousNeuron = previousLayerNeurons.get(k);	// taking the previous neuron that gives the weight the input
+						double weightGradient = delta * previousNeuron.activate(previousNeuron.getOutput());	// calculating the gradient using the derivative of l(S(Z))	
+						currentNeuron.setWeightGradient(k, currentNeuron.getWeightGradient(k) + weightGradient);	// setting the weightGradient of the current neuron
+						nextLayersInGradient.get(j).set(k,nextLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));
+					}
+					double biasGradient = delta;
+					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
+				
+				}
+				
+			} 		
+			// just for the hidden layers
+			else{	
+				for(int j = 0; j<neuronNumber;++j) {
+					curLayersInGradient = nextLayersInGradient;
+					Neuron currentNeuron=this.getLayers().get(i).get(j);
+					double dActivationOnOutput = currentNeuron.AFDerivative(currentNeuron.getOutput());	// derivative of the activation function with the non activated output as input
+					double nextLayerGradientSum = 0;
+					for(int k=0; k< nextLayersInGradient.size(); ++k) {
+						nextLayerGradientSum += curLayersInGradient.get(k).get(j);	// considering the sum of the next layer input of the neuron considered
+					}
+					double delta = nextLayerGradientSum*dActivationOnOutput;	// chain rule on the partial derivatives calculated up to now. Delta is the same for every weight of a given neuron.
+					
+					for(int k = 0; k < currentNeuron.getWeights().size(); k++){
+						Neuron previousNeuron = previousLayerNeurons.get(k);	// taking the previous neuron that gives the weight the input
+						double weightGradient = delta * previousNeuron.activate(previousNeuron.getOutput());	// calculating the gradient using the derivative of l(S(Z))	
+						currentNeuron.setWeightGradient(k, currentNeuron.getWeightGradient(k) + weightGradient);		
+						nextLayersInGradient.get(j).set(k,curLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));	
+					}
+					double biasGradient = delta;
+					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
+				
+				}
+			}
+		}
 	}
 	
 	/**

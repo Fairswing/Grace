@@ -132,6 +132,11 @@ public class RegularNeuron implements Neuron, Serializable{
 	public List<Double> getWeightsGradient() {
 		return this.weightsGradient;
 	}
+	
+	@Override
+	public double getWeightGradient(int i) {
+		return this.weightsGradient.get(i);
+	}
 
 	@Override
 	public double getDelta() {
@@ -143,6 +148,12 @@ public class RegularNeuron implements Neuron, Serializable{
 	public void setDelta(double delta) {
 		// TODO Auto-generated method stub
 		this.delta = delta;
+	}
+
+
+	@Override
+	public void setWeightGradient(int k, double d) {
+		this.getWeightsGradient().set(k, d);
 	}
 
 }
