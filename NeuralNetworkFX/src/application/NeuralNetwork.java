@@ -226,7 +226,12 @@ public class NeuralNetwork implements Serializable{
 	    }
 	}
 	
-	
+	/**
+	 * 
+	 * This method is used to save the state of the neural network
+	 * 
+	 * @return void
+	 */
 	public boolean saveState() {
 		boolean saved = false;
 		
@@ -254,6 +259,12 @@ public class NeuralNetwork implements Serializable{
 		return saved;
 	}
 	
+	/**
+	 * 
+	 * This function load the state of the previous neural network
+	 * 
+	 * @return void
+	 */
 	public static NeuralNetwork loadState(){
 		
 		NeuralNetwork loadedNN = null;
