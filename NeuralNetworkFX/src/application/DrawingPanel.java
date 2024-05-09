@@ -86,7 +86,7 @@ public class DrawingPanel extends StackPane{
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%100==0) {
-	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.costAverage(TrainIn, TrainOut));
+	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
         				
