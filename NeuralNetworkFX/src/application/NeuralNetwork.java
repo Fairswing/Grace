@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -173,9 +174,10 @@ public class NeuralNetwork implements Serializable{
 	 * @param expectedOutput the output that we expect from the neural network
 	 */
 	public void backPropagation(double expectedOutput) {
-		ArrayList<List<Double>> nextLayersInGradient = new ArrayList<List<Double>>();	// considering the next layer gradient of the input
-		for(int i = this.getLayers().size() - 1; i>0; ++i) {
-			ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// considering the next layer gradient of the input
+		// considering the next layer gradient of the input
+		for(int i = this.getLayers().size() - 1; i>0; --i) {
+			ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>(this.getLayers().size());	// considering the next layer gradient of the input
+			ArrayList<List<Double>> nextLayersInGradient = new ArrayList<List<Double>>(this.getLayers().size());	
 
 			List<Neuron> previousLayerNeurons = this.getLayers().get(i-1); // we save the neurons of the previous layer
 			int neuronNumber = this.getLayers().get(i).size();	// the number of neurons preset in the layer
@@ -192,14 +194,14 @@ public class NeuralNetwork implements Serializable{
 						Neuron previousNeuron = previousLayerNeurons.get(k);	// taking the previous neuron that gives the weight the input
 						double weightGradient = delta * previousNeuron.activate(previousNeuron.getOutput());	// calculating the gradient using the derivative of l(S(Z))	
 						currentNeuron.setWeightGradient(k, currentNeuron.getWeightGradient(k) + weightGradient);	// setting the weightGradient of the current neuron
-						nextLayersInGradient.get(j).set(k,nextLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));
+						nextLayersInGradient.get(j).set(k,curLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));
 					}
 					double biasGradient = delta;
 					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
 				
 				}
 				
-			} 		
+			}
 			// just for the hidden layers
 			else{	
 				for(int j = 0; j<neuronNumber;++j) {
