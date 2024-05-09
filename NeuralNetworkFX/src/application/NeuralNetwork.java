@@ -254,11 +254,11 @@ public class NeuralNetwork implements Serializable{
 	}
 	
 	/**
-	 * This function train the neural network
+	 * This function trains the neural network
 	 * 
 	 * @param trainingData: the inputs of the inputs layer
 	 * @param outTrainingData: the expected output
-	 * @param miniBatchSize: >0 to use batch gradient descent; ==0 to use stochastic gradient descent
+	 * @param miniBatchSize: >0 to use mini-batch gradient descent; ==0 to use stochastic gradient descent
 	 */
 	public void train(List<List<Double>> trainingData, List<Double> outTrainingData, int miniBatchSize) {
 		int trainCount=trainingData.size();
@@ -278,7 +278,8 @@ public class NeuralNetwork implements Serializable{
 	    }
 	}
 	/**
-	 * This function train the neural network
+	 * This function trains the neural network
+	 * batch gradient descent
 	 * 
 	 * @param trainingData the inputs of the inputs layer
 	 * @param outTrainingData the expected output
