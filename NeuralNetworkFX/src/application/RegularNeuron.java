@@ -22,8 +22,7 @@ public class RegularNeuron implements Neuron, Serializable{
 		this.weights = new ArrayList<Double>();
 		this.weightsGradient = new ArrayList<Double>();
 		for(int i=0;i<nWeights; ++i) {
-			Random rand = new Random();
-			this.weights.add((double)rand.nextGaussian() * Math.sqrt(2.0 / nWeights));// randomize the initial value of the weight
+			this.weights.add(Math.random());// randomize the initial value of the weight
 			this.weightsGradient.add(0d);
 		}
 		this.bias = (double)Math.random(); // should be randomly initialized like weights

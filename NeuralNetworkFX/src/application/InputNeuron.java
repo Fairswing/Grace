@@ -43,7 +43,9 @@ public class InputNeuron implements Neuron, Serializable {
 		for(int i=0;i<inputs.size();++i) {
 			 result+= inputs.get(i);
 		}
-		return activate(result);
+		this.output=result;
+		this.setOutput(result);
+		return result;
 	}
 	
 	@Override

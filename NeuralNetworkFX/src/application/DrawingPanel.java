@@ -45,7 +45,7 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.addLayer(1, "sigmoid");*/
 	            	
 	            	scervelo.addLayer(2);
-	            	scervelo.addLayer(5, "sigmoid");
+	            	scervelo.addLayer(3, "sigmoid");
 	            	scervelo.addLayer(1, "sigmoid");
 	            	
 	            	/*if(!toTrain && nnData.exists())
@@ -76,13 +76,13 @@ public class DrawingPanel extends StackPane{
 	        	    TrainIn.add(List.of(0d,1d));
 	        	    TrainIn.add(List.of(1d,1d));
 	        	    
- 	        		TrainOut.add((double)0);
- 	        		TrainOut.add((double)1);
- 	        		TrainOut.add((double)1);
- 	        		TrainOut.add((double)0);
+ 	        		TrainOut.add(0d);
+ 	        		TrainOut.add(1d);
+ 	        		TrainOut.add(1d);
+ 	        		TrainOut.add(0d);
 	        		
 	                drawBackground();
-	        		for(int i=0; i<1000*10; ++i) {
+	        		for(int i=0; i<1000*2000; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%100==0) {
