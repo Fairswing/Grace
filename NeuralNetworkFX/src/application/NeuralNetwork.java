@@ -34,7 +34,7 @@ public class NeuralNetwork implements Serializable{
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learningRate=1e-5d;
+		this.learningRate=1d;
 //		this.momentumFactor=0.0d;
 
 	}
@@ -88,13 +88,17 @@ public class NeuralNetwork implements Serializable{
 			this.layers.get(layerIndex).add(new RegularNeuron(this.layers.get(layerIndex - 1).size(), activationFunction));
 	}
 	
-	
+	/**
+	 * 
+	 * @param inputs a list of all the inputs to give to the inputs layer
+	 * @return the inputs for the next layers
+	 */
 	public List<Double> forward(List<Double> inputs) {
 		List<Double> currentInputs = new ArrayList<>(inputs);
 	    double neuronOutput;
 	    List<Double> neuronInputs;
 	    for (List<Neuron> layer : this.layers) {
-	        List<Double> layerOutputs = new ArrayList<>();
+	    	List<Double> layerOutputs = new ArrayList<>();
 	        if(this.layers.indexOf(layer)==0) {
 		        int neuronIndex = 0;
 				for (Neuron neuron : layer) {
@@ -119,104 +123,65 @@ public class NeuralNetwork implements Serializable{
 	    return currentInputs; // Return the output of the last layer
 	}
 	
-	// Calculate the average of the cost of each training example.
-	public double costAverage(List<List<Double>> trainingData, List<Double> outTrainingData) {
+	/**
+	 * 
+	 * 
+	 * @param trainingData a list of all the training data
+	 * @param outTrainingData a list of all the expected output
+	 * @return an average of all the distances from the expected output and the actual output ( loss)
+	 */
+	public double lossAverage(List<List<Double>> trainingData, List<Double> outTrainingData) {
 	    double result = 0.0d;
 	    int trainCount = trainingData.size();
 	    for (int i = 0; i < trainCount; ++i) {
 	    	List<Double> output = forward(trainingData.get(i));
-	    	result+=cost(output.get(0), outTrainingData.get(i));
+	    	result+=loss(output.get(0), outTrainingData.get(i));
         }
 	    result /= (trainingData.size());
 	    return result;
 	}
 	
-	// cost function is used to calculate the difference between the output and the expected output.
-	// The result is squared to penalize larger errors.
-	// MSE
-	public double cost(double output, double expectedOutput) {
+	/**
+	 * This function calculate the value of the loss
+	 * 
+	 * @param output the output of the nn
+	 * @param expectedOutput the output that we expect from the nn
+	 * @return loss the loss value
+	 */
+	public double loss(double output, double expectedOutput) {
 		double error=0d;
 			error = (output - expectedOutput);
 			error = Math.pow(error, 2);
-        return error/2;
-	}
-	// cost derivative
-	public double costDerivative(Double output, Double expectedOutput) {
-		double error=0d;
-			error = output - expectedOutput;
         return error;
 	}
 	
-	/* Back propagation algorithm
-	// to be finished!!!
-	// i think gradients of one layer should be multiplyied by the gradients of the next one.
-	// it will probably be necesary to keep track of every calculated gradient instead of adding them to the same variable.
-	// check how the chain rule works.
-	// Stochastic gradient descent could be implemented when these problems are sorted to improve performance.*/
+	/**
+	 * This function calculate the derivative of the loss function in the point x(weight)
+	 * 
+	 * @param x the point in x in the function loss
+	 * @return the derivative of the loss(x)
+	 */
+	public double lossDerivative(double weight) {
+		double error=0d;
+			error = 2*weight;
+        return error;
+	}
+	
+	/**
+	 * This function is used to propagate the error of the output layer to all the hidden layers
+	 * 
+	 * @param expectedOutput the output that we expect from the neural network
+	 */
 	public void backPropagation(double expectedOutput) {
-		double cOnAl=0d;	// 2(aL-y) how much the activation of the current neuron and layer influence Cost
-		double alOnZl=0d;	// activationF'(output(L)) derivative of the activation function of the current neuron and layer
-		double zlOnWl=0d;	// a(L-1) how much Zl changes based on the change of weight
-		// double zlOnBl=1d;	// how much zl changed base on the bias
-		double weightGradient=0d;
-		double biasGradient=0d;
-		Neuron prevNeuron;
 		
-		// saving the gradients of the last layer
-		for (Neuron currentNeuron : this.layers.get(layers.size()-1)) {	// iterating trough the neurons of the current layer
-            List<Double> curNeuronWeights = currentNeuron.getWeights();	// getting the current neuron weights
-            cOnAl = costDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput);
-			alOnZl = currentNeuron.AFDerivative(currentNeuron.getOutput());
-            currentNeuron.setDelta(cOnAl*alOnZl);	// optimizing function calculating delta one time for every neuron weight
-            for(int j=0;j<curNeuronWeights.size(); ++j) {
-    			for(int k = 0; k < this.layers.get(layers.size()-2).size(); k++) {
-    				prevNeuron = this.layers.get(layers.size()-2).get(k);
-    				zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
-    				
-    				// multiplying the current neuron delta by the activated output of the neuron of the previous layer
-    				weightGradient += currentNeuron.getDelta() * zlOnWl;
-    			}
-    			currentNeuron.getWeightsGradient().set(j, currentNeuron.getWeightsGradient().get(j)+weightGradient);
-    		}
-            biasGradient = currentNeuron.getDelta();
-            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
-    	}
-		
-		// iterating trough the others layers
-    	for (int i=this.layers.size()-2; i>0; --i) {	// moving trough all the layers from the last one to the first one
-	    	for (Neuron currentNeuron : this.layers.get(i)) {	// iterating trough the neurons of the current layer
-	    		weightGradient = 0d;
-	            List<Double> curNeuronWeights = currentNeuron.getWeights();	// getting the current neuron weights
-	            double delta = 0;
-	            for(int j=0;j<curNeuronWeights.size(); ++j) {
-	    			
-	    			// calculating delta for each neuron in the next layer
-	    			for(int k = 0; k < this.layers.get(i+1).size(); k++) {
-	    				double prevNeuronDelta = this.layers.get(i+1).get(k).getDelta();
-	    				double prevNeuronWeight = this.layers.get(i+1).get(k).getWeight(this.layers.get(i).indexOf(currentNeuron));
-	    				double sigmoidDerivative = currentNeuron.AFDerivative(currentNeuron.getOutput());
-	    				delta += prevNeuronDelta * prevNeuronWeight * sigmoidDerivative;
-	    			}	
-	    			currentNeuron.setDelta(delta);	// saving the delta of the current neuron
-	    			
-	    			// calculating the gradient for the current neuron considering the activated output of each neuron 
-	    			//	of the previous layer
-	    			for(int k = 0; k < this.layers.get(i-1).size(); k++) {
-	    				prevNeuron = this.layers.get(i-1).get(k);
-		    			zlOnWl = prevNeuron.activate(prevNeuron.getOutput());
-	    				
-	    				// multiplying the current neuron delta by the activated output of the neuron of the previous layer
-	    				weightGradient += currentNeuron.getDelta() * zlOnWl;
-	    			}
-	    			currentNeuron.getWeightsGradient().set(j, currentNeuron.getWeightsGradient().get(j)+weightGradient);
-	    		}
-	            biasGradient = currentNeuron.getDelta();
-	            currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
-	    	}
-    	}
         
 	}
 	
+	/**
+	 * This function is used to update weight and biases using each gradient calculated with the chainrule
+	 * 
+	 * @param trainCount the number of the train iterations
+	 */
 	private void updateWeightsAndBiases(int trainCount) {
 	    // Update weights and biases
 	    for (int i = 1; i < this.layers.size(); ++i) {
@@ -233,6 +198,12 @@ public class NeuralNetwork implements Serializable{
 	    }
 	}
 	
+	/**
+	 * This function train the neural network
+	 * 
+	 * @param trainingData the inputs of the inputs layer
+	 * @param outTrainingData the expected output
+	 */
 	public void train(List<List<Double>> trainingData, List<Double> outTrainingData) {
 		int trainCount=trainingData.size();
 		// Loop over training examples

@@ -33,22 +33,26 @@ public class DrawingPanel extends StackPane{
 	            @Override
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
+	            	ArrayList<List<Double>> TrainIn = new ArrayList<>();
+	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
 	            	File nnData = new File("savedNN.dat");
 	            	scervelo.setnWeightsXNeuron(1);
             		
-	        		scervelo.addLayer(30);
+	        		/*scervelo.addLayer(30);
 	        		scervelo.addLayer(7, "sigmoid");
 	        		scervelo.addLayer(5, "sigmoid");
 	        		scervelo.addLayer(3, "sigmoid");
-	        		scervelo.addLayer(1, "sigmoid");
+	        		scervelo.addLayer(1, "sigmoid");*/
 	            	
-	            	if(!toTrain && nnData.exists())
+	            	scervelo.addLayer(2);
+	            	scervelo.addLayer(5, "sigmoid");
+	            	scervelo.addLayer(1, "sigmoid");
+	            	
+	            	/*if(!toTrain && nnData.exists())
 	            		scervelo = NeuralNetwork.loadState();
 	        		
 	        		
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
-	        		ArrayList<List<Double>> TrainIn = new ArrayList<List<Double>>();
-	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
 	        		
 	        		// setting up all the training data for the nn to use
 	        		for(int i = 0; i < data.size(); i++) {
@@ -65,11 +69,20 @@ public class DrawingPanel extends StackPane{
 	        			// for debugging purpose only
 	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
-	        		}
+	        		}*/
 	        		
-
+	        	    TrainIn.add(List.of(0d,0d));
+	        	    TrainIn.add(List.of(1d,0d));
+	        	    TrainIn.add(List.of(0d,1d));
+	        	    TrainIn.add(List.of(1d,1d));
+	        	    
+ 	        		TrainOut.add((double)0);
+ 	        		TrainOut.add((double)1);
+ 	        		TrainOut.add((double)1);
+ 	        		TrainOut.add((double)0);
+	        		
 	                drawBackground();
-	        		for(int i=0; i<1000*100; ++i) {
+	        		for(int i=0; i<1000*10; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
 	        			if(i%100==0) {
