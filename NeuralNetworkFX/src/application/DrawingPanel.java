@@ -38,17 +38,17 @@ public class DrawingPanel extends StackPane{
 	            	File nnData = new File("savedNN.dat");
 	            	scervelo.setnWeightsXNeuron(1);
             		
-	        		/*scervelo.addLayer(30);
-	        		scervelo.addLayer(7, "sigmoid");
-	        		scervelo.addLayer(5, "sigmoid");
-	        		scervelo.addLayer(3, "sigmoid");
-	        		scervelo.addLayer(1, "sigmoid");*/
-	            	
+	        		scervelo.addLayer(30);
+	        		scervelo.addLayer(30, "relu");
+	        		scervelo.addLayer(15, "relu");
+	        		scervelo.addLayer(7, "relu");
+	        		scervelo.addLayer(1, "sigmoid");
+	        		/*
 	            	scervelo.addLayer(2);
 	            	scervelo.addLayer(2, "relu");
 	            	scervelo.addLayer(1, "sigmoid");
-	            	
-	            	/*if(!toTrain && nnData.exists())
+					*/
+	            	if(!toTrain && nnData.exists())
 	            		scervelo = NeuralNetwork.loadState();
 	        		
 	        		
@@ -69,8 +69,8 @@ public class DrawingPanel extends StackPane{
 	        			// for debugging purpose only
 	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
-	        		}*/
-	        		
+	        		}
+	        		/*
 	        	    TrainIn.add(List.of(0d,0d));
 	        	    TrainIn.add(List.of(1d,0d));
 	        	    TrainIn.add(List.of(0d,1d));
@@ -80,12 +80,12 @@ public class DrawingPanel extends StackPane{
  	        		TrainOut.add((double)1);
  	        		TrainOut.add((double)1);
  	        		TrainOut.add((double)0);
-	        		
+	        		*/
 	                drawBackground();
 	        		for(int i=0; i<1000*2000; ++i) {
 	        			scervelo.train(TrainIn, TrainOut);
 	        			// DEBUG
-	        			if(i%10000==0) {
+	        			if(i%100==0) {
 	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut));
 	        			}
 	        			drawNN(scervelo);
