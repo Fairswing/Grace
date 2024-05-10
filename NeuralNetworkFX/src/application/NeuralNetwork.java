@@ -92,7 +92,7 @@ public class NeuralNetwork implements Serializable{
 	/**
 	 * 
 	 * @param inputs a list of all the inputs to give to the inputs layer
-	 * @return the inputs for the next layers
+	 * @return the output of the neural network
 	 */
 	public List<Double> forward(List<Double> inputs) {
 		List<Double> currentInputs = new ArrayList<>(inputs);
@@ -336,6 +336,66 @@ public class NeuralNetwork implements Serializable{
 		
 		
 		return loadedNN;
+	}
+	
+	/**
+	 * 
+	 * This function is used to make a trained neural network make calculated guesses on given inputs and debugging it
+	 * 
+	 * @param inputs The inputs that the neural network need to do the guessing on
+	 * @param expectedOutputs The outputs that we expect from the neural network
+	 * @return A list of all the calculated guess of the neural network
+	 */
+	public List<Double> nnGuessing(List<List<Double>> inputs, List<Double> expectedOutputs){
+		List<Double> calculatedOutputGuess = null;
+		if(NeuralNetwork.loadState() != null)
+		{
+			calculatedOutputGuess = new ArrayList<Double>();
+			int inputsNumber = inputs.size();
+			int wronGuess = 0;
+			double percentageWronGuess;
+			
+			for (int k = 0; k < inputsNumber; ++k) {
+		        // Forward pass to make the trained neural network guess the output
+				calculatedOutputGuess.add(forward(inputs.get(k)).get(0));
+		    }
+			
+			for(int k = 0; k < expectedOutputs.size(); k++) {
+				if((Math.abs(calculatedOutputGuess.get(k)-expectedOutputs.get(k)) > 0.15)) {
+					wronGuess++;
+				}
+			}
+			percentageWronGuess = (wronGuess/expectedOutputs.size())*100;
+			
+			System.out.println("The percentage of error is: " + percentageWronGuess);
+			
+		} else
+			System.out.println("Impossibile fare il guessing da una rete neurale non trainata");
+		return calculatedOutputGuess;
+	}
+	
+	/**
+	 * 
+	 * This function is used to make a trained neural network make calculated guesses on given inputs
+	 * 
+	 * @param inputs The inputs that the neural network need to do the guessing on
+	 * @return A list of all the calculated guess of the neural network
+	 */
+	public List<List<Double>> nnGuessing(List<List<Double>> inputs){
+		List<List<Double>> calculatedOutputGuess = null;
+		if(NeuralNetwork.loadState() != null)
+		{
+			calculatedOutputGuess = new ArrayList<List<Double>>();
+			int inputsNumber = inputs.size();
+			
+			for (int k = 0; k < inputsNumber; ++k) {
+		        // Forward pass to make the trained neural network guess the output
+				calculatedOutputGuess.add(forward(inputs.get(k)));
+		    }
+			
+		} else
+			System.out.println("Impossibile fare il guessing da una rete neurale non trainata");
+		return calculatedOutputGuess;
 	}
 
 }

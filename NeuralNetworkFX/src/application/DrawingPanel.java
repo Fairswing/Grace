@@ -35,7 +35,10 @@ public class DrawingPanel extends StackPane{
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	            	ArrayList<List<Double>> TrainIn = new ArrayList<>();
 	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
+	        		ArrayList<List<Double>> GuessIn = new ArrayList<>();
+	        		ArrayList<Double> GuessOut = new ArrayList<Double>();
 	            	File nnData = new File("savedNN.dat");
+	            	int i;
 	            	scervelo.setnWeightsXNeuron(1);
             		
 	        		scervelo.addLayer(30);
@@ -55,7 +58,7 @@ public class DrawingPanel extends StackPane{
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
 	        		
 	        		// setting up all the training data for the nn to use
-	        		for(int i = 0; i < data.size(); i++) {
+	        		for(i = 0; i < data.size()-100; i++) {
 	        			double diagnosis;
 	        			
 	        			if("M".equals(data.get(i).getDiagnosis()))
@@ -65,6 +68,23 @@ public class DrawingPanel extends StackPane{
 	        			
 	        			TrainOut.add(diagnosis);
 	        			TrainIn.add(data.get(i).getAllNormalizedData());
+	        			
+	        			// for debugging purpose only
+	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
+	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
+	        		}
+	        		
+	        		// setting up the guess data
+	        		for(i++; i < data.size(); i++) {
+	        			double diagnosis;
+	        			
+	        			if("M".equals(data.get(i).getDiagnosis()))
+	        				diagnosis = 0;
+	        			else
+	        				diagnosis = 1;
+	        			
+	        			GuessOut.add(diagnosis);
+	        			GuessIn.add(data.get(i).getAllNormalizedData());
 	        			
 	        			// for debugging purpose only
 	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
@@ -82,15 +102,18 @@ public class DrawingPanel extends StackPane{
  	        		TrainOut.add((double)0);
 	        		*/
 	                drawBackground();
-	        		for(int i=0; i<1000*2000; ++i) {
-	        			scervelo.train(TrainIn, TrainOut);
-	        			// DEBUG
-	        			if(i%100==0) {
-	        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut));
-	        			}
-	        			drawNN(scervelo);
-        				
-	        		}
+	        		if(toTrain) {
+	        			for(i=0; i<1000*20; ++i) {
+		        			scervelo.train(TrainIn, TrainOut);
+		        			// DEBUG
+		        			if(i%100==0) {
+		        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut));
+		        			}
+		        			drawNN(scervelo);
+	        				
+		        		}
+	        		} else 
+	        			scervelo.nnGuessing(GuessIn,GuessOut);
 	        	
 	        		
 	        		/*
@@ -113,7 +136,7 @@ public class DrawingPanel extends StackPane{
         			
 	        		// Print the results.
 	        		System.out.println("--------------------------- RESULT");
-	        		for (int i = 0; i < TrainIn.size(); ++i) {
+	        		for (i = 0; i < TrainIn.size(); ++i) {
 	        			//System.out.print("input: "+TrainIn.get(i).toString());
 	        	        System.out.print("\tExpected output: "+TrainOut.get(i).toString());
 	        	        System.out.print(" | Actual output: "+ img.get(i).toString());
