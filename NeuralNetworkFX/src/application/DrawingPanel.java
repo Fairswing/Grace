@@ -58,7 +58,7 @@ public class DrawingPanel extends StackPane{
 	        		ArrayList<Cancer> data = DataReader.getCSV();;
 	        		
 	        		// setting up all the training data for the nn to use
-	        		for(i = 0; i < data.size()-100; i++) {
+	        		for(i = 0; i < data.size()-50; i++) {
 	        			double diagnosis;
 	        			
 	        			if("M".equals(data.get(i).getDiagnosis()))
@@ -103,7 +103,7 @@ public class DrawingPanel extends StackPane{
 	        		*/
 	                drawBackground();
 	        		if(toTrain) {
-	        			for(i=0; i<1000*20; ++i) {
+	        			for(i=0; i<1000*10; ++i) {
 		        			scervelo.train(TrainIn, TrainOut);
 		        			// DEBUG
 		        			if(i%100==0) {
@@ -112,8 +112,10 @@ public class DrawingPanel extends StackPane{
 		        			drawNN(scervelo);
 	        				
 		        		}
-	        		} else 
+	        		} else {
+	        			drawNN(scervelo);
 	        			scervelo.nnGuessing(GuessIn,GuessOut);
+	        		}
 	        	
 	        		
 	        		/*
@@ -122,38 +124,41 @@ public class DrawingPanel extends StackPane{
 	        		 * 
 	        		*/
 	        		
-	        		// Get the neural network's outputs.
-	        		List<Double> img = new ArrayList<>();
-        			for (int y = 0; y < TrainIn.size(); ++y) {
-        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
-        		    	img.add(output.get(0));
-        	        }
-        			
-        			boolean saved = scervelo.saveState();
-	        		
-        			double errorSum = 0;
-        			double maxError = TrainOut.get(0) - img.get(0);
-        			
-	        		// Print the results.
-	        		System.out.println("--------------------------- RESULT");
-	        		for (i = 0; i < TrainIn.size(); ++i) {
-	        			//System.out.print("input: "+TrainIn.get(i).toString());
-	        	        System.out.print("\tExpected output: "+TrainOut.get(i).toString());
-	        	        System.out.print(" | Actual output: "+ img.get(i).toString());
-	        	        System.out.println(" \tError: [ "+ (TrainOut.get(i) - img.get(i)) + " ]");
-	        	        errorSum += Math.abs(TrainOut.get(i) - img.get(i));
-	        	        if(maxError < Math.abs(TrainOut.get(i) - img.get(i)))
-	        	        	maxError = Math.abs(TrainOut.get(i) - img.get(i));
-	                }
-	        		
-	        		System.out.print("\tErrore medio: " + errorSum/500);
-	        		System.out.print(" | Errore massimo: " + maxError);
-	        		System.out.println("  \tultimo cost: " + scervelo.lossAverage(TrainIn, TrainOut));
-	        		
-	        		if(saved)
-	        			System.out.println("\tNeural Network saved correctly");
-	        		else
-	        			System.out.println("\tErrors saving the Neural Network");
+	        		// Training code part of the neuralNetwork
+	        		if(toTrain) {
+	        			// Get the neural network's outputs.
+		        		List<Double> img = new ArrayList<>();
+	        			for (int y = 0; y < TrainIn.size(); ++y) {
+	        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
+	        		    	img.add(output.get(0));
+	        	        }
+	        			
+	        			boolean saved = scervelo.saveState();
+		        		
+	        			double errorSum = 0;
+	        			double maxError = TrainOut.get(0) - img.get(0);
+	        			
+		        		// Printing the results of the train.
+			        	System.out.println("--------------------------- RESULT");
+			        	for (i = 0; i < TrainIn.size(); ++i) {
+			        	   //System.out.print("input: "+TrainIn.get(i).toString());
+			        	   System.out.print("\tExpected output: "+TrainOut.get(i).toString());
+			        	   System.out.print(" | Actual output: "+ img.get(i).toString());
+			        	   System.out.println(" \tError: [ "+ (TrainOut.get(i) - img.get(i)) + " ]");
+			        	   errorSum += Math.abs(TrainOut.get(i) - img.get(i));
+			        	   if(maxError < Math.abs(TrainOut.get(i) - img.get(i)))
+			        	        maxError = Math.abs(TrainOut.get(i) - img.get(i));
+			               }
+			        		
+			        		System.out.print("\tErrore medio: " + errorSum/500);
+				        	System.out.print(" | Errore massimo: " + maxError);
+				        	System.out.println("  \tultimo cost: " + scervelo.lossAverage(TrainIn, TrainOut));
+		        		
+		        		if(saved)
+		        			System.out.println("\tNeural Network saved correctly");
+		        		else
+		        			System.out.println("\tErrors saving the Neural Network");
+	        		}
 	            }
            });
 	}
@@ -168,7 +173,7 @@ public class DrawingPanel extends StackPane{
 	// Define offset variables
 	private int xOffset = 150;
 	private int yOffset = 10;
-	private int yMaxNNHeight = 60;
+	private int yMaxNNHeight = 55;
 	public void drawNN(NeuralNetwork scervelo) {
 	    Platform.runLater(() -> {
 	    	int layerYOffset=0;
