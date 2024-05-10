@@ -396,7 +396,7 @@ public class NeuralNetwork implements Serializable{
     	        System.out.print(" | Actual output: "+ calculatedOutputGuess.get(i).toString());
     	        System.out.println(" \tError: [ "+ Math.abs(expectedOutputs.get(i) - calculatedOutputGuess.get(i)) + " ]");
 			}
-			System.out.println(" \tThe percentage of error is: " + percentageWronGuess + "%");
+			System.out.println(" \tThe percentage of error is: " + (int)percentageWronGuess + "%");
 			
 		} else
 			System.out.println("Impossibile fare il guessing da una rete neurale non trainata");
