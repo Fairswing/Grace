@@ -30,13 +30,13 @@ public class NeuralNetwork implements Serializable{
 	private List<List<Neuron>> layers;
 	private double learningRate;
 	private int nWeightsXNeuron;
-	//private double momentumFactor;// Rapresents how much of the momentum is retained
+	//private double momentumFactor; // Represents how much of the momentum is retained ( to be implemented)
 
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
 		this.learningRate=0.5d;
-//		this.momentumFactor=0.0d;
+		// this.momentumFactor=0.0d;	commenting the momentumFactori because we are not considering it now
 
 	}
 	
@@ -377,7 +377,6 @@ public class NeuralNetwork implements Serializable{
 			calculatedOutputGuess = new ArrayList<Double>();
 			int inputsNumber = inputs.size();
 			int wronGuess = 0;
-			double percentageWronGuess;
 			
 			for (int k = 0; k < inputsNumber; ++k) {
 		        // Forward pass to make the trained neural network guess the output
@@ -389,14 +388,13 @@ public class NeuralNetwork implements Serializable{
 					wronGuess++;
 				}
 			}
-			percentageWronGuess = (wronGuess/expectedOutputs.size())*100;
 			
 			for(int i = 0; i<calculatedOutputGuess.size(); i++) {
 				System.out.print("\tExpected output: "+expectedOutputs.get(i).toString());
     	        System.out.print(" | Actual output: "+ calculatedOutputGuess.get(i).toString());
     	        System.out.println(" \tError: [ "+ Math.abs(expectedOutputs.get(i) - calculatedOutputGuess.get(i)) + " ]");
 			}
-			System.out.println(" \tThe percentage of error is: " + (int)percentageWronGuess + "%");
+			System.out.println(" \tThe percentage of error is: " + (double)wronGuess/expectedOutputs.size() * 100 + "%");
 			
 		} else
 			System.out.println("Impossibile fare il guessing da una rete neurale non trainata");
