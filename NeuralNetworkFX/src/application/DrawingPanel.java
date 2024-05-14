@@ -9,6 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import com.csvreader.CsvReader;
 
 public class DrawingPanel extends StackPane{
     private static Canvas canvas;
@@ -55,7 +56,37 @@ public class DrawingPanel extends StackPane{
 	            		scervelo = NeuralNetwork.loadState();
 	        		
 	        		
-	        		ArrayList<Cancer> data = DataReader.getCSV();;
+	            	CsvReader dataset = DataReader.getCSV("dataset.csv");
+	            	ArrayList<Cancer> data = new ArrayList<Cancer>();
+		
+					// for debugging purpose only
+					//System.out.println(dataset.toString());
+					
+					try {
+						
+						dataset.readHeaders();	// reading the headers of the csv
+						
+						while (dataset.readRecord()) {	// populating the cancers dataset
+							data.add(new Cancer(dataset.get("id"), dataset.get("diagnosis"), Float.parseFloat(dataset.get("radius_mean")), Float.parseFloat(dataset.get("texture_mean")), 
+									Float.parseFloat(dataset.get("perimeter_mean")), Float.parseFloat(dataset.get("area_mean")), Float.parseFloat(dataset.get("smoothness_mean")),
+									Float.parseFloat(dataset.get("compactness_mean")), Float.parseFloat(dataset.get("concavity_mean")), Float.parseFloat(dataset.get("concave points_mean")),
+									Float.parseFloat(dataset.get("symmetry_mean")), Float.parseFloat(dataset.get("fractal_dimension_mean")), Float.parseFloat(dataset.get("radius_se")),
+									Float.parseFloat(dataset.get("texture_se")), Float.parseFloat(dataset.get("perimeter_se")), Float.parseFloat(dataset.get("area_se")), Float.parseFloat(dataset.get("smoothness_se")),
+									Float.parseFloat(dataset.get("compactness_se")), Float.parseFloat(dataset.get("concavity_se")), Float.parseFloat(dataset.get("concave points_se")),
+									Float.parseFloat(dataset.get("symmetry_se")), Float.parseFloat(dataset.get("fractal_dimension_se")), Float.parseFloat(dataset.get("radius_worst")),
+									Float.parseFloat(dataset.get("texture_worst")), Float.parseFloat(dataset.get("perimeter_worst")), Float.parseFloat(dataset.get("area_worst")),
+									Float.parseFloat(dataset.get("smoothness_worst")), Float.parseFloat(dataset.get("compactness_worst")), Float.parseFloat(dataset.get("concavity_worst")),
+									Float.parseFloat(dataset.get("concave points_worst")), Float.parseFloat(dataset.get("symmetry_worst")), Float.parseFloat(dataset.get("fractal_dimension_worst"))));
+						}
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					dataset.close();
 	        		
 	        		// setting up all the training data for the nn to use
 	        		for(i = 0; i < data.size()-50; i++) {
@@ -70,7 +101,7 @@ public class DrawingPanel extends StackPane{
 	        			TrainIn.add(data.get(i).getAllNormalizedData());
 	        			
 	        			// for debugging purpose only
-	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
+	        			System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
 	        		}
 	        		

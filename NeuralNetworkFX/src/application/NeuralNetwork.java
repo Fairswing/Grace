@@ -35,7 +35,7 @@ public class NeuralNetwork implements Serializable{
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learningRate=0.5d;
+		this.learningRate=1d;
 		// this.momentumFactor=0.0d;	commenting the momentumFactori because we are not considering it now
 
 	}
