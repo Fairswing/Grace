@@ -101,7 +101,7 @@ public class DrawingPanel extends StackPane{
 	        			TrainIn.add(data.get(i).getAllNormalizedData());
 	        			
 	        			// for debugging purpose only
-	        			System.out.println("first training data: " + TrainIn.get(i).toString());
+	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
 	        		}
 	        		
