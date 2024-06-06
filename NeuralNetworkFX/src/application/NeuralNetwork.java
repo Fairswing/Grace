@@ -245,7 +245,7 @@ public class NeuralNetwork implements Serializable{
 	}
 	
 	/**
-	 * This function is used to update weight and biases using each gradient calculated with the chainrule
+	 * This function is used to update weight and biases using each gradient calculated with the chain rule
 	 * 
 	 * @param trainCount the number of the train iterations
 	 */
