@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	 	public static double panelHeight=1000;
 	    public static double panelWidth=1000;
-	    boolean toTrain = true;
+	    boolean toTrain = false;
 	    DrawingPanel panel;
 
     @Override

@@ -59,6 +59,10 @@ public class NeuralNetwork implements Serializable{
 		return layers;
 	}
 
+	/**
+	 * Giving the nn a full list of layers to set all the layers
+	 * @param layers the layers to add
+	 */
 	public void setLayers(List<List<Neuron>> layers) {
 		this.layers = layers;
 	}
@@ -69,13 +73,23 @@ public class NeuralNetwork implements Serializable{
 		this.layers.add(new ArrayList<Neuron>());
 	}
 	
+	/**
+	 * Adding a layer to the NN
+	 * @param nNeurons the number of Neurons to add
+	 * @param activationFunction the activation function of the neuron of the created layer
+	 */
 	public void addLayer(int nNeurons, String activationFunction) {
 		this.layers.add(new ArrayList<Neuron>());
 		for(int i=0;i<nNeurons;i++) {
 			this.addNeuronToLayer(layers.size()-1, activationFunction);
 		}
 	}
-	public void addLayer(int nNeurons) {
+	
+	/**
+	 * Adding a layer to the NN
+	 * @param nNeurons the number of Neurons to add
+	 */
+	public void addLayer(int nNeurons) {	
 		this.layers.add(new ArrayList<Neuron>());
 		for(int i=0;i<nNeurons;i++) {
 			this.addNeuronToLayer(layers.size()-1, null);
@@ -174,7 +188,7 @@ public class NeuralNetwork implements Serializable{
 	 * @param expectedOutput the output that we expect from the neural network
 	 */
 	public void backPropagation(double expectedOutput) {
-		ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// to store the current layer's gradients of the input which wil be used in the next layer to apply the chain rule
+		ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// to store the current layer's gradients of the input which will be used in the next layer to apply the chain rule
 		for(int i = this.getLayers().size() - 1; i>0; --i) {
 			List<Neuron> previousLayerNeurons = this.getLayers().get(i-1); // to save the neurons of the previous layer
 			int neuronNumber = this.getLayers().get(i).size();	// the number of neurons preset in the layer

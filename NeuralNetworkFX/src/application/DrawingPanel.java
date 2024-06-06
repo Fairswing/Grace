@@ -47,11 +47,7 @@ public class DrawingPanel extends StackPane{
 	        		scervelo.addLayer(15, "relu");
 	        		scervelo.addLayer(7, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
-	        		/*
-	            	scervelo.addLayer(2);
-	            	scervelo.addLayer(2, "relu");
-	            	scervelo.addLayer(1, "sigmoid");
-					*/
+	        		
 	            	if(!toTrain && nnData.exists())
 	            		scervelo = NeuralNetwork.loadState();
 	        		
@@ -121,18 +117,8 @@ public class DrawingPanel extends StackPane{
 	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
 	        		}
-	        		/*
-	        	    TrainIn.add(List.of(0d,0d));
-	        	    TrainIn.add(List.of(1d,0d));
-	        	    TrainIn.add(List.of(0d,1d));
-	        	    TrainIn.add(List.of(1d,1d));
-	        	    
- 	        		TrainOut.add((double)0);
- 	        		TrainOut.add((double)1);
- 	        		TrainOut.add((double)1);
- 	        		TrainOut.add((double)0);
-	        		*/
-	                drawBackground();
+
+	                drawBackground();	// drawing the nn to be shown
 	        		if(toTrain) {
 	        			for(i=0; i<1000*10; ++i) {
 		        			scervelo.train(TrainIn, TrainOut);
