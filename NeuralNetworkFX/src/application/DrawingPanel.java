@@ -16,7 +16,6 @@ public class DrawingPanel extends StackPane{
 	private static GraphicsContext g2d;
 	private Thread thread1;
 	private static int pixel;// pixel dimension
-	private static int imgDim; // image dimension
 	boolean toTrain;
 	
 	public DrawingPanel() throws IOException {
@@ -27,7 +26,6 @@ public class DrawingPanel extends StackPane{
 		canvas.heightProperty().bind(heightProperty());
 		g2d = canvas.getGraphicsContext2D();
 		pixel=16;
-		imgDim=6;
 		g2d.setLineWidth(2.0);
 
 		thread1 = new Thread(new Runnable() {
@@ -116,13 +114,16 @@ public class DrawingPanel extends StackPane{
 	        			//System.out.println("first training data: " + TrainIn.get(i).toString());
 	        			//System.out.println("number of inputs: " + TrainIn.get(i).size());
 	        		}
-
+	        		
+	            	
+	        		
 	                drawBackground();	// drawing the nn to be shown
+
 	        		if(toTrain) {
 	        			double startTime = System.currentTimeMillis();
 	        			double endTime;
 	        			double elapsedTime;
-	        			for(i=0; i<1000*10; ++i) {
+	        			for(i=0; i<1000*100; ++i) {
 		        			scervelo.train(TrainIn, TrainOut);
 		        			// DEBUG
 		        			if(i%100==0) {
@@ -163,7 +164,7 @@ public class DrawingPanel extends StackPane{
 		        		// Printing the results of the train.
 			        	System.out.println("--------------------------- RESULT");
 			        	for (i = 0; i < TrainIn.size(); ++i) {
-			        		for(int k=0; k<TrainOut.size(); k++) {
+			        		for(int k=0; k<TrainOut.get(i).size(); k++) {
 			        			//System.out.print("input: "+TrainIn.get(i).toString());
 			        			double curOutput = outputs.get(i).get(k);
 			        			double curExpectedOutput = TrainOut.get(i).get(k);
@@ -280,32 +281,12 @@ public class DrawingPanel extends StackPane{
 	    this.xOffset = xOffset;
 	    this.yOffset = yOffset;
 	}
-
-
 	
 	public static void drawBackground() {
 		Platform.runLater(() -> {
 			g2d.setFill(Color.rgb(100, 100, 100));
 			g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		});
-	}
-	
-
-	public static void drawImage(List<Double> image, int x,int y, int pixelSize, int imgSize) {
-		
-		Platform.runLater(() -> {
-			List<Double> imageCPY = List.copyOf(image);
-			int curY=0;
-			for(int i=0; i<imageCPY.size(); ++i) {
-				
-				g2d.setFill(Color.rgb((int)(imageCPY.get(i)*255), (int)(imageCPY.get(i)*255), (int)(imageCPY.get(i)*255)));
-				g2d.fillRect((i%imgDim)*pixel+x, curY*pixel+y, pixel, pixel);
-				if(((i+1)%imgDim)==0) {
-					curY+=1;
-				}
-			}
-		});
-		
 	}
 	
 }
