@@ -35,7 +35,7 @@ public class NeuralNetwork implements Serializable{
 	public NeuralNetwork() {
 		super();
 		this.layers = new ArrayList<List<Neuron>>();
-		this.learningRate=1d;
+		this.learningRate=0.5d;
 		// this.momentumFactor=0.0d;	commenting the momentumFactori because we are not considering it now
 
 	}
@@ -190,57 +190,56 @@ public class NeuralNetwork implements Serializable{
 	 * @param expectedOutput the output that we expect from the neural network
 	 */
 	public void backPropagation(List<Double> expectedOutput) {
-		ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// to store the current layer's gradients of the input which will be used in the next layer to apply the chain rule
+		List<List<Double>> curLayerInGradients = new ArrayList<>();	// to store the current layer's gradients of the input which will be used in the next layer to apply the chain rule
 		for(int i = this.getLayers().size() - 1; i>0; --i) {
-			List<Neuron> previousLayerNeurons = this.getLayers().get(i-1); // to save the neurons of the previous layer
-			int neuronNumber = this.getLayers().get(i).size();	// the number of neurons preset in the layer
-			
-			// just for the output layer
+	        List<Neuron> currentLayerNeurons = this.getLayers().get(i);
+	        List<Neuron> previousLayerNeurons = this.getLayers().get(i - 1);
+	        int neuronCount = currentLayerNeurons.size();
+	        int prevNeuronCount = previousLayerNeurons.size();
+
+			// Output layer
 			if(i == this.getLayers().size()-1) {	
-				for(int j = 0; j<neuronNumber;++j) {
+				for(int j = 0; j<neuronCount;++j) {
 					Neuron currentNeuron=this.getLayers().get(i).get(j);
-					double dLoss = lossDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput.get(j)); // derivative of the loss function
-					double dActivationOnOutput = currentNeuron.AFDerivative(currentNeuron.getOutput());	// derivative of the activation function with the non activated output as input
+	                double curNoutput = currentNeuron.getOutput();
+					double activatedCurNoutput = currentNeuron.activate(curNoutput);
+					double dLoss = lossDerivative(activatedCurNoutput,expectedOutput.get(j)); // derivative of the loss function
+					double dActivationOnOutput = currentNeuron.AFDerivative(curNoutput);	// derivative of the activation function with the non activated output as input
 					double delta = dLoss*dActivationOnOutput;	// chain rule on the partial derivatives calculated up to now. Delta is the same for every weight of a given neuron.
-					curLayersInGradient.add(j, new ArrayList<Double>());
-					for(int k = 0; k < currentNeuron.getWeights().size(); k++){
+	                List<Double> weightGradients = new ArrayList<>(Collections.nCopies(prevNeuronCount, 0.0));
+					for(int k = 0; k < prevNeuronCount; k++){
 						Neuron previousNeuron = previousLayerNeurons.get(k);	// taking the previous neuron that gives the weight the input
 						double weightGradient = delta * previousNeuron.activate(previousNeuron.getOutput());	// calculating the gradient using the derivative of l(S(Z))	
 						currentNeuron.setWeightGradient(k, currentNeuron.getWeightGradient(k) + weightGradient);	// setting the weightGradient of the current neuron
-						curLayersInGradient.get(j).add(0d);
-						curLayersInGradient.get(j).set(k,curLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));
+	                    weightGradients.set(k, weightGradients.get(k) + delta * currentNeuron.getWeight(k));
 					}
-					double biasGradient = delta;
-					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
-				
-				}
-				
+	                curLayerInGradients.add(weightGradients);
+					//	delta = biasGradient
+					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient() + delta);
+				}	
 			}
-			// just for the hidden layers
-			else{
-				ArrayList<List<Double>> prevLayersInGradient = new ArrayList<List<Double>>(curLayersInGradient);	// to store the previous layer's gradients of the input
-				Collections.copy(prevLayersInGradient, curLayersInGradient);
-				curLayersInGradient.clear();
+			else{ // Hidden layers
+	            List<List<Double>> prevLayerInGradients = new ArrayList<>(curLayerInGradients);	// to store the previous layer's gradients of the input
+	            curLayerInGradients.clear();
 
-				for(int j = 0; j<neuronNumber;++j) {
+				for(int j = 0; j<neuronCount;++j) {
 					Neuron currentNeuron=this.getLayers().get(i).get(j);
 					double dActivationOnOutput = currentNeuron.AFDerivative(currentNeuron.getOutput());	// derivative of the activation function with the non activated output as input
 					double prevLayerGradientSum = 0;
-					for(int k=0; k< prevLayersInGradient.size(); ++k) {
-						prevLayerGradientSum += prevLayersInGradient.get(k).get(j);	// considering the sum of the next layer input of the neuron considered
+					for(int k=0; k< prevLayerInGradients.size(); ++k) {
+						prevLayerGradientSum += prevLayerInGradients.get(k).get(j);	// considering the sum of the next layer input of the neuron considered
 					}
 					double delta = prevLayerGradientSum*dActivationOnOutput;	// chain rule on the partial derivatives calculated up to now. Delta is the same for every weight of a given neuron.
-					curLayersInGradient.add(j, new ArrayList<Double>());
-					for(int k = 0; k < currentNeuron.getWeights().size(); k++){
+	                List<Double> weightGradients = new ArrayList<>(Collections.nCopies(prevNeuronCount, 0.0));
+					for(int k = 0; k < prevNeuronCount; k++){
 						Neuron previousNeuron = previousLayerNeurons.get(k);	// taking the previous neuron that gives the weight the input
 						double weightGradient = delta * previousNeuron.activate(previousNeuron.getOutput());	// calculating the gradient using the derivative of l(S(Z))	
 						currentNeuron.setWeightGradient(k, currentNeuron.getWeightGradient(k) + weightGradient);
-						curLayersInGradient.get(j).add(0d);
-						curLayersInGradient.get(j).set(k,curLayersInGradient.get(j).get(k) + (delta * currentNeuron.getWeight(k)));
+	                    weightGradients.set(k, weightGradients.get(k) + delta * currentNeuron.getWeight(k));
 					}
-					double biasGradient = delta;
-					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient()+biasGradient);
-				
+	                curLayerInGradients.add(weightGradients);
+	                // delta = biasGradient
+					currentNeuron.setBiasGradient(currentNeuron.getBiasGradient() + delta);
 				}
 			}
 		}
@@ -269,30 +268,6 @@ public class NeuralNetwork implements Serializable{
 	    }
 	}
 	
-	/**
-	 * This function trains the neural network
-	 * 
-	 * @param trainingData: the inputs of the inputs layer
-	 * @param outTrainingData: the expected output
-	 * @param miniBatchSize: >0 to use mini-batch gradient descent; ==0 to use stochastic gradient descent
-	 */
-	public void train(List<List<Double>> trainingData, List<List<Double>> outTrainingData, int miniBatchSize) {
-		int trainCount=trainingData.size();
-		// Loop over training examples
-	    for (int i = 0; i < trainCount; ++i) {
-	        // Forward pass
-	        forward(trainingData.get(i));
-	        // Backword pass
-	        backPropagation(outTrainingData.get(i));
-	        if(miniBatchSize==0) {
-	        	// Update weights and biases
-	    	    updateWeightsAndBiases(1);
-	        }else if(i%miniBatchSize==0){
-	        	// Update weights and biases
-	    	    updateWeightsAndBiases(miniBatchSize);
-	        }
-	    }
-	}
 	/**
 	 * This function trains the neural network
 	 * batch gradient descent

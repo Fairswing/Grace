@@ -119,11 +119,17 @@ public class DrawingPanel extends StackPane{
 
 	                drawBackground();	// drawing the nn to be shown
 	        		if(toTrain) {
+	        			double startTime = System.currentTimeMillis();
+	        			double endTime;
+	        			double elapsedTime;
 	        			for(i=0; i<1000*10; ++i) {
 		        			scervelo.train(TrainIn, TrainOut);
 		        			// DEBUG
 		        			if(i%100==0) {
-		        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut));
+		        				endTime = System.currentTimeMillis();
+		        				elapsedTime = endTime - startTime;
+		        				System.out.println("Iteration " + i + ", Cost: " + scervelo.lossAverage(TrainIn, TrainOut) + ",time: " + elapsedTime);
+		        				startTime = endTime;
 		        			}
 		        			drawNN(scervelo);
 	        				
