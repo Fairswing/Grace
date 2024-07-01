@@ -145,12 +145,14 @@ public class NeuralNetwork implements Serializable{
 	 * @param outTrainingData a list of all the expected output
 	 * @return an average of all the distances from the expected output and the actual output ( loss)
 	 */
-	public double lossAverage(List<List<Double>> trainingData, List<Double> outTrainingData) {
+	public double lossAverage(List<List<Double>> trainingData, List<List<Double>> outTrainingData) {
 	    double result = 0.0d;
 	    int trainCount = trainingData.size();
 	    for (int i = 0; i < trainCount; ++i) {
 	    	List<Double> output = forward(trainingData.get(i));
-	    	result+=loss(output.get(0), outTrainingData.get(i));
+	    	for(int k=0; k<output.size(); k++) {
+	    		result+=loss(output.get(k), outTrainingData.get(i).get(k));
+	    	}	
         }
 	    result /= (trainingData.size());
 	    return result;
@@ -187,7 +189,7 @@ public class NeuralNetwork implements Serializable{
 	 * 
 	 * @param expectedOutput the output that we expect from the neural network
 	 */
-	public void backPropagation(double expectedOutput) {
+	public void backPropagation(List<Double> expectedOutput) {
 		ArrayList<List<Double>> curLayersInGradient = new ArrayList<List<Double>>();	// to store the current layer's gradients of the input which will be used in the next layer to apply the chain rule
 		for(int i = this.getLayers().size() - 1; i>0; --i) {
 			List<Neuron> previousLayerNeurons = this.getLayers().get(i-1); // to save the neurons of the previous layer
@@ -197,7 +199,7 @@ public class NeuralNetwork implements Serializable{
 			if(i == this.getLayers().size()-1) {	
 				for(int j = 0; j<neuronNumber;++j) {
 					Neuron currentNeuron=this.getLayers().get(i).get(j);
-					double dLoss = lossDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput); // derivative of the loss function
+					double dLoss = lossDerivative(currentNeuron.activate(currentNeuron.getOutput()),expectedOutput.get(j)); // derivative of the loss function
 					double dActivationOnOutput = currentNeuron.AFDerivative(currentNeuron.getOutput());	// derivative of the activation function with the non activated output as input
 					double delta = dLoss*dActivationOnOutput;	// chain rule on the partial derivatives calculated up to now. Delta is the same for every weight of a given neuron.
 					curLayersInGradient.add(j, new ArrayList<Double>());
@@ -274,18 +276,18 @@ public class NeuralNetwork implements Serializable{
 	 * @param outTrainingData: the expected output
 	 * @param miniBatchSize: >0 to use mini-batch gradient descent; ==0 to use stochastic gradient descent
 	 */
-	public void train(List<List<Double>> trainingData, List<Double> outTrainingData, int miniBatchSize) {
+	public void train(List<List<Double>> trainingData, List<List<Double>> outTrainingData, int miniBatchSize) {
 		int trainCount=trainingData.size();
 		// Loop over training examples
-	    for (int k = 0; k < trainCount; ++k) {
+	    for (int i = 0; i < trainCount; ++i) {
 	        // Forward pass
-	        forward(trainingData.get(k));
+	        forward(trainingData.get(i));
 	        // Backword pass
-	        backPropagation(outTrainingData.get(k));
+	        backPropagation(outTrainingData.get(i));
 	        if(miniBatchSize==0) {
 	        	// Update weights and biases
 	    	    updateWeightsAndBiases(1);
-	        }else if(k%miniBatchSize==0){
+	        }else if(i%miniBatchSize==0){
 	        	// Update weights and biases
 	    	    updateWeightsAndBiases(miniBatchSize);
 	        }
@@ -298,14 +300,14 @@ public class NeuralNetwork implements Serializable{
 	 * @param trainingData the inputs of the inputs layer
 	 * @param outTrainingData the expected output
 	 */
-	public void train(List<List<Double>> trainingData, List<Double> outTrainingData) {
+	public void train(List<List<Double>> trainingData, List<List<Double>> outTrainingData) {
 		int trainCount=trainingData.size();
 		// Loop over training examples
-	    for (int k = 0; k < trainCount; ++k) {
+	    for (int i = 0; i < trainCount; ++i) {
 	        // Forward pass
-	        forward(trainingData.get(k));
+	        forward(trainingData.get(i));
 	        // Backword pass
-	        backPropagation(outTrainingData.get(k));
+	        backPropagation(outTrainingData.get(i));
 	    }
 	    // Update weights and biases
 	    updateWeightsAndBiases(trainCount);

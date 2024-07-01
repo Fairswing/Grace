@@ -17,7 +17,7 @@ public class DrawingPanel extends StackPane{
 	private Thread thread1;
 	private static int pixel;// pixel dimension
 	private static int imgDim; // image dimension
-	boolean toTrain = false;
+	boolean toTrain;
 	
 	public DrawingPanel() throws IOException {
 		canvas = new Canvas();
@@ -35,15 +35,14 @@ public class DrawingPanel extends StackPane{
 				public void run() {
 	            	NeuralNetwork scervelo = new NeuralNetwork();
 	            	ArrayList<List<Double>> TrainIn = new ArrayList<>();
-	        		ArrayList<Double> TrainOut = new ArrayList<Double>();
+	            	ArrayList<List<Double>> TrainOut = new ArrayList<>();
 	        		ArrayList<List<Double>> GuessIn = new ArrayList<>();
 	        		ArrayList<Double> GuessOut = new ArrayList<Double>();
 	            	File nnData = new File("savedNN.dat");
 	            	int i;
 	            	scervelo.setnWeightsXNeuron(1);
-            		
-	        		scervelo.addLayer(30);
-	        		scervelo.addLayer(30, "relu");
+	            	scervelo.addLayer(30);
+	            	scervelo.addLayer(30, "relu");
 	        		scervelo.addLayer(15, "relu");
 	        		scervelo.addLayer(7, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
@@ -93,7 +92,7 @@ public class DrawingPanel extends StackPane{
 	        			else
 	        				diagnosis = 1;
 	        			
-	        			TrainOut.add(diagnosis);
+	        			TrainOut.add(List.of(diagnosis));
 	        			TrainIn.add(data.get(i).getAllNormalizedData());
 	        			
 	        			// for debugging purpose only
@@ -144,28 +143,33 @@ public class DrawingPanel extends StackPane{
 	        		// Training code part of the neuralNetwork
 	        		if(toTrain) {
 	        			// Get the neural network's outputs.
-		        		List<Double> img = new ArrayList<>();
+	        			ArrayList<List<Double>> outputs = new ArrayList<>();
 	        			for (int y = 0; y < TrainIn.size(); ++y) {
-	        		    	List<Double> output = scervelo.forward(TrainIn.get(y));
-	        		    	img.add(output.get(0));
+	        		    	List<Double> curOutputs = scervelo.forward(TrainIn.get(y));
+	        		    	outputs.add(curOutputs);
 	        	        }
 	        			
 	        			boolean saved = scervelo.saveState();
 		        		
 	        			double errorSum = 0;
-	        			double maxError = TrainOut.get(0) - img.get(0);
+	        			double maxError = TrainOut.get(0).get(0) - outputs.get(0).get(0);
 	        			
 		        		// Printing the results of the train.
 			        	System.out.println("--------------------------- RESULT");
 			        	for (i = 0; i < TrainIn.size(); ++i) {
-			        	   //System.out.print("input: "+TrainIn.get(i).toString());
-			        	   System.out.print("\tExpected output: "+TrainOut.get(i).toString());
-			        	   System.out.print(" | Actual output: "+ img.get(i).toString());
-			        	   System.out.println(" \tError: [ "+ (TrainOut.get(i) - img.get(i)) + " ]");
-			        	   errorSum += Math.abs(TrainOut.get(i) - img.get(i));
-			        	   if(maxError < Math.abs(TrainOut.get(i) - img.get(i)))
-			        	        maxError = Math.abs(TrainOut.get(i) - img.get(i));
-			               }
+			        		for(int k=0; k<TrainOut.size(); k++) {
+			        			//System.out.print("input: "+TrainIn.get(i).toString());
+			        			double curOutput = outputs.get(i).get(k);
+			        			double curExpectedOutput = TrainOut.get(i).get(k);
+			        			System.out.print("\tExpected output: "+curExpectedOutput);
+			        			System.out.print(" | Actual output: "+ curOutput);
+			        			System.out.println(" \tError: [ "+ (TrainOut.get(i).get(k) - curOutput) + " ]");
+			        			errorSum += Math.abs(curExpectedOutput - curOutput);
+			        			if(maxError < Math.abs(curExpectedOutput - curOutput))
+			        				maxError = Math.abs(curExpectedOutput - curOutput);
+			        		}
+			        	   
+			        	}
 			        		
 			        		System.out.print("\tErrore medio: " + errorSum/500);
 				        	System.out.print(" | Errore massimo: " + maxError);
