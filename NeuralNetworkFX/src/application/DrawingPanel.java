@@ -40,8 +40,6 @@ public class DrawingPanel extends StackPane{
 	            	int i;
 	            	scervelo.setnWeightsXNeuron(1);
 	            	scervelo.addLayer(30);
-	            	scervelo.addLayer(30, "relu");
-	        		scervelo.addLayer(15, "relu");
 	        		scervelo.addLayer(7, "relu");
 	        		scervelo.addLayer(1, "sigmoid");
 	        		
@@ -196,90 +194,92 @@ public class DrawingPanel extends StackPane{
 		thread1.start();
 	}
 	
-	
-	
-	// Define offset variables
-	private int xOffset = 150;
-	private int yOffset = 10;
-	private int yMaxNNHeight = 55;
-	public void drawNN(NeuralNetwork scervelo) {
-	    Platform.runLater(() -> {
-	    	int layerYOffset=0;
-	    	int prevLayerYOffset=0;
-	        int k = 0;
-	        Color color;
-	        for (List<Neuron> layer : scervelo.getLayers()) {
-	        	int curLayer = scervelo.getLayers().indexOf(layer);
-	            int y = 0;
-	            prevLayerYOffset=layerYOffset;
-	            layerYOffset=yMaxNNHeight/scervelo.getLayers().get(curLayer).size();
-	            
-	            for (Neuron currentNeuron : layer) {
-	                // Skip drawing connections for the input layer
-	                if (curLayer == 0) {
-	                	g2d.setFill(Color.BLACK);
-	                    g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
-	                    y++;
-	                    continue;
-	                }else {
 
-	                }
+	// offset configuration
+	private int layerHorizontalSpacing = 200;
+	private int networkVerticalOffset = 100;
+	private int maxLayerHeight = 800;
+
+	public void drawNN(NeuralNetwork network) {
+	    Platform.runLater(() -> {
+	        List<List<Neuron>> layers = network.getLayers();
+	        int neuronDiameter = 10;
+	        
+	        for (int layerIndex = 0; layerIndex < layers.size(); layerIndex++) {
+	            List<Neuron> currentLayer = layers.get(layerIndex);
+	            int neuronsInLayer = currentLayer.size();
+	            int verticalSpacing = maxLayerHeight / (neuronsInLayer + 1);
+	            
+	            for (int neuronIndex = 0; neuronIndex < neuronsInLayer; neuronIndex++) {
+	                Neuron neuron = currentLayer.get(neuronIndex);
+	                int xPosition = layerIndex * (neuronDiameter + layerHorizontalSpacing) + layerHorizontalSpacing;
+	                int yPosition = networkVerticalOffset + verticalSpacing * (neuronIndex + 1) - neuronDiameter/2;
 	                
-	                List<Double> weights = currentNeuron.getWeights();
-	                
-	                // Iterate over neurons in the previous layer
-	                for (int i = 0; i < scervelo.getLayers().get(curLayer - 1).size(); i++) {
-	                    double weight = weights.get(i); // Get the weight corresponding to the connection between currentNeuron and prevNeuron
-	                    color = calculateColor(weight,"r");
-	                    
-	                    // Draw connection line with color based on weight
-	                    drawConnection(((k - 1) * (pixel+xOffset)+xOffset)+pixel/2, (i * (pixel*prevLayerYOffset) + yOffset+pixel*prevLayerYOffset/2)+pixel/2, (k * (pixel+xOffset)+xOffset)+pixel/2, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2)+pixel/2, color);
+	                if (layerIndex == 0) {
+	                    drawInputNeuron(xPosition, yPosition, neuronDiameter);
+	                } else {
+	                    drawHiddenNeuron(xPosition, yPosition, neuronDiameter, neuron);
+	                    drawConnections(layers, layerIndex, neuronIndex, neuron, xPosition, yPosition, neuronDiameter);
 	                }
-	                color = calculateColor(currentNeuron.getBias(),"g");
-                	g2d.setFill(color);
-	                g2d.fillOval(k * (pixel+xOffset)+xOffset, (y * (pixel*layerYOffset) + yOffset+pixel*layerYOffset/2), pixel, pixel);
-	                y++;
 	            }
-	            k++;
 	        }
 	    });
 	}
 
+	private void drawInputNeuron(int x, int y, int diameter) {
+	    g2d.setFill(Color.LIGHTGRAY);
+	    g2d.fillOval(x, y, diameter, diameter);
+	    g2d.setStroke(Color.BLACK);
+	    g2d.strokeOval(x, y, diameter, diameter);
+	}
 
+	private void drawHiddenNeuron(int x, int y, int diameter, Neuron neuron) {
+	    Color biasColor = calculateColor(neuron.getBias(), "g");
+	    g2d.setFill(biasColor);
+	    g2d.fillOval(x, y, diameter, diameter);
+	    g2d.setStroke(Color.BLACK);
+	    g2d.strokeOval(x, y, diameter, diameter);
+	}
 
-	// Helper method to calculate color based on weight
-	private Color calculateColor(Double x, String color) {
-		if(x==null) {
-			return Color.rgb(0, 0, 0);
-		}
-	    // Map the weight to a value between 0 and 255
-	    int colorValue = (int) (Math.abs(x) * 255);
-	    // Ensure the color value is within the valid range of 0 to 255
-	    colorValue = Math.min(Math.max(colorValue, 0), 255);
-	    // Use the color value for red component, and set green and blue to 0
-	    switch(color) {
-	    	case "r":
-	    		return Color.rgb(colorValue, 0, 0);
-	    	case "g":
-	    		return Color.rgb(0, colorValue, 0);
-	    	case "b":
-	    		return Color.rgb(0, 0, colorValue);
-	    	default:
-	    		return Color.rgb(colorValue, 0, 0);
+	private void drawConnections(List<List<Neuron>> layers, int layerIndex, int neuronIndex, 
+	                           Neuron neuron, int x, int y, int diameter) {
+	    List<Double> weights = neuron.getWeights();
+	    List<Neuron> prevLayer = layers.get(layerIndex - 1);
+	    int prevLayerNeuronCount = prevLayer.size();
+	    int prevVerticalSpacing = maxLayerHeight / (prevLayerNeuronCount + 1);
+
+	    for (int prevNeuronIndex = 0; prevNeuronIndex < prevLayerNeuronCount; prevNeuronIndex++) {
+	        double weight = weights.get(prevNeuronIndex);
+	        Color connectionColor = calculateColor(weight, "r");
+	        
+	        int prevX = (layerIndex - 1) * (diameter + layerHorizontalSpacing) + layerHorizontalSpacing + diameter/2;
+	        int prevY = networkVerticalOffset + prevVerticalSpacing * (prevNeuronIndex + 1);
+	        int currX = x + diameter/2;
+	        int currY = y + diameter/2;
+	        
+	        drawWeightedConnection(prevX, prevY, currX, currY, connectionColor, weight);
 	    }
+	}
+
+	private Color calculateColor(Double value, String colorChannel) {
+	    if (value == null) return Color.BLACK;
 	    
+	    int intensity = (int) (Math.min(Math.max(Math.abs(value), 0), 1) * 255);
+	    double alpha = colorChannel.equals("r") ? 0.7 : 1.0;
+	    
+	    switch(colorChannel) {
+	        case "r": return Color.rgb(intensity, 0, 0, alpha);
+	        case "g": return Color.rgb(0, intensity, 0, alpha);
+	        case "b": return Color.rgb(0, 0, intensity, alpha);
+	        default: return Color.BLACK;
+	    }
 	}
 
-	// Helper method to draw connection line with specified color
-	private void drawConnection(int x1, int y1, int x2, int y2, Color color) {
+	private void drawWeightedConnection(int x1, int y1, int x2, int y2, Color color, double weight) {
 	    g2d.setStroke(color);
+	    g2d.setLineWidth(1 + (float) (Math.abs(weight)));
 	    g2d.strokeLine(x1, y1, x2, y2);
-	}
-
-	// Method to set the offset variables
-	public void setOffset(int xOffset, int yOffset) {
-	    this.xOffset = xOffset;
-	    this.yOffset = yOffset;
+	    g2d.setLineWidth(1);
 	}
 	
 	public static void drawBackground() {
