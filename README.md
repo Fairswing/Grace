@@ -3,6 +3,9 @@
 **GRACE** stands for **Generic Risk Assessment and Cancer Evaluation** — a Java-based project developed for **learning purposes**.  
 Its primary goal is to explore how Artificial Intelligence works under the hood, by building a simple neural network library from scratch, complete with **backpropagation** and **gradient descent**.
 
+![Recording2025-04-14212054-ezgif com-optimize](https://github.com/user-attachments/assets/622a63cd-f61f-4317-a8c1-9c87d6d57b97)
+
+
 ---
 
 ## 📚 Purpose
