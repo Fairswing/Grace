@@ -48,7 +48,7 @@ This project was built to:
 #### Import Project:
 **Option 1: Clone from Git**
 ```bash
-git clone https://github.com/andreicscs/FabricSimulation.git
+git clone https://github.com/Fairswing/Grace.git
 ```
 Then in Eclipse:
 
